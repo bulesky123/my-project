@@ -1,0 +1,33 @@
+//easy-mock模拟数据接口地址
+const EASY_MOCK = 'https://www.easy-mock.com/mock';
+const MOCK_AUTH = EASY_MOCK + '/597b5ed9a1d30433d8411456/auth';         // 权限接口地址
+export const MOCK_AUTH_ADMIN = MOCK_AUTH + '/admin';                      // 管理员权限接口
+export const MOCK_AUTH_VISITOR = MOCK_AUTH + '/visitor';                  // 访问权限接口
+
+let config,env = process.env.NODE_ENV;
+switch (env){
+    case 'development':
+        config={
+            HTTP_MAIN:"auth/",
+            LOGIN_URL:""
+        };
+        break;
+    case 'rd':
+        config={
+            HTTP_MAIN:"auth/",
+            LOGIN_URL:""
+        };
+        break;
+    case 'production':
+        config={
+            HTTP_MAIN:"auth/",
+            LOGIN_URL:""
+        };
+        break;
+    default:
+        config={
+            HTTP_MAIN:"auth/",
+            LOGIN_URL:""
+        };
+}
+export default config;

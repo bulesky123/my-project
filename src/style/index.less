@@ -1,0 +1,189 @@
+@import "variables";
+@import "global";
+@import "scroll";
+@import "table";
+@import "icons";
+@import "modal";
+@import "menu";
+@import "img";
+@import "utils-text";
+@import "utils-color";
+@import "utils-size";
+@import "utils-border";
+@import "utils-spacing";
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+#root{
+  height: 100%;
+}
+.ant-layout{
+  height: 100%;
+  display: flex;
+  .logo{
+    height: 32px;
+    background: #333;
+    border-radius: 6px;
+    margin: 16px;
+  }
+  .ant-layout-sider-collapsed{
+    .anticon{
+      font-size: 16px;
+      margin-left: 8px;
+    }
+    .nav-text{
+      display: none;
+    }
+    .ant-menu-submenu-vertical > .ant-menu-submenu-title:after{
+      display: none;
+    }
+    .ant-menu-dark:not(.ant-menu-inline) .ant-menu-submenu-open {
+      color: inherit;
+    }
+  }
+  p {
+    margin: 10px 0 10px 0;
+  }
+}
+.gutter-example{
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction:column;
+}
+.gutter-box {
+  padding: 5px 0;
+}
+
+:global {
+  .ant-card-head-title {
+    font-size: 14px !important;
+  }
+}
+
+
+/*自己定义css*/
+.gs-content{
+  flex: 1;
+  display: flex;
+  flex-direction:column;
+  width: 100%;
+  height: 100%;
+  padding: 10px 10px;
+  background: #ffffff;
+}
+
+.content-search{
+  padding: 0px 0px 10px 0px;
+  border-bottom:1px solid #cccccc;
+}
+
+.content-list{
+  flex: 1;
+  display: flex;
+  flex-direction:column;
+}
+.content-list-table{
+  flex: 1;
+  overflow: hidden;
+}
+.content-loading{
+  width: 100%;
+  height: 100%;
+  padding: 50px 0px;
+  text-align: center;
+}
+.borrow-search-info{
+  padding: 5px 0;
+  text-align: left;
+  font-size: 14px;
+  .content-title{
+    font-size: 16px;
+    font-weight: 600;
+    margin-right: 10px;
+  }
+}
+
+.content-title{
+  padding: 10px 0px;
+  &:before{
+    content:"";
+    display:inline-block;
+    width: 2px;
+    height: 16px;
+    margin-right: 10px;
+    position: relative;
+    top:2px;
+    background: #2a2b3c;
+  }
+}
+
+.borrow-detail-info{
+  li{
+    margin-bottom: 4px;
+    span{
+      margin-right: 8px;
+      &:first-child{
+        font-size: 14px;
+      }
+    }
+  }
+}
+.link-down{
+  color: #2196f3;
+  text-decoration:underline;
+}
+.modify-withdraw{
+  &>div{
+    position: relative;
+    background: #fff;
+    padding: 20px;
+  }
+  h2{
+    display: inline-block;
+    width: 150px
+  }
+  .modify-btn{
+    position: absolute;
+    width: 100px;
+    right: 150px;
+    top: 10px;
+    color: #fff;
+    display: inline-block;
+    font-size: 18px;
+    text-align: center;
+    background-color: #2196f3;
+    border-radius: 5px;
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+  }
+  .bottom-btn{
+    text-align: center;
+    margin-top: 20px;
+    span{
+      display: inline-block;
+      width: 100px;
+      height: 30px;
+      color: #fff;
+      font-size: 18px;
+      text-align: center;
+      line-height: 30px;
+      cursor: pointer;
+
+      &.cancel-btn{
+        background: #d7d7d7;
+      }
+      &.save-btn{
+        background: #42bba8;
+        margin-left: 40px;
+      }
+    }
+  }
+  .error-tips{
+    color: red
+  }
+}
+

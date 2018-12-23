@@ -5,7 +5,8 @@ import rows from '../api/event-unusual'
 
 function fetchEventUnusual(opts = {}) {
     return dispatch => {
-        const api = config.LOGIN_URL;
+        //const api = config.BASEURL+'querySensorConfList';
+        const api = config.LOGIN_URL
         get({url:api,data:opts}).then((res)=>{
              //if(res.status ==0){
                 dispatch(
@@ -15,6 +16,7 @@ function fetchEventUnusual(opts = {}) {
         })
     }
 }
+
 
 function pushUnusual(eventList) {
     return {

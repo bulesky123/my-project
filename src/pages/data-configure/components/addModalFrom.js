@@ -1,4 +1,9 @@
 import React,{Component} from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import {post} from '../../../axios/tools'
+import config from '../../../axios/config'
+import fetchEventUnusual  from '../../../action/event-unusual';
 import {
   Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete,
 } from 'antd';
@@ -7,12 +12,15 @@ const { Option } = Select;
 const AutoCompleteOption = AutoComplete.Option;
 
 
-class RegistrationForm extends React.Component {
+class AddModalForm extends React.Component {
   constructor(){
         super();
         this.state={
             visible:false
         }
+    }
+    componentWillMount(){
+        
     }
     componentDidMount(){
         //this.props.form.resetFields() 
@@ -23,8 +31,12 @@ class RegistrationForm extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {  
         console.log('Received values of form: ', values);
-        this.props.form.resetFields() 
-        this.props.hideModal()
+        post({url:config.BASEURL+'addSensorConf',data:values}).then((data)=>{
+          this.props.form.resetFields() ;
+          this.props.hideModal();
+          this.props.fetchEventUnusual();
+        })
+        
       }
     });
   }
@@ -45,7 +57,7 @@ class RegistrationForm extends React.Component {
         sm: { span: 16 },
       },
     };
-
+    //this.props.form.setFieldsValue({})
     return (
       <div>
       <Form onSubmit={this.handleSubmit}>
@@ -325,14 +337,14 @@ class RegistrationForm extends React.Component {
           {...formItemLayout}
           label="传感器类型"
         >
-          {getFieldDecorator('space_cordinate_z', {initialValue:'1'})(
+          {getFieldDecorator('space_cordinate_z', {initialValue:'5'})(
                   <Select>
-                      <Option  value="1">5min</Option>
-                      <Option value="2">10min</Option>
-                      <Option value="3">30min</Option>
-                      <Option value="3">1h</Option>
-                      <Option value="4">12h</Option>
-                      <Option value="5">24h</Option>
+                      <Option value="5">5min</Option>
+                      <Option value="10">10min</Option>
+                      <Option value="30">30min</Option>
+                      <Option value="100">1h</Option>
+                      <Option value="40">12h</Option>
+                      <Option value="50">24h</Option>
                   </Select>
               )}
           
@@ -352,7 +364,15 @@ class RegistrationForm extends React.Component {
     );
   }
 }
+const WrappedAddModalForm = Form.create()(AddModalForm);
 
-const WrappedRegistrationForm = Form.create()(RegistrationForm);
-
-export default WrappedRegistrationForm
+//要state什么属性放到props里面
+const mapStateToProps = (state) => {
+    
+    return state;
+};
+//要什么方法，放到props里面,自动dispath
+const mapDispatchToProps = (dispatch) => ({
+    fetchEventUnusual: bindActionCreators(fetchEventUnusual, dispatch)
+});
+export default connect(mapStateToProps, mapDispatchToProps)(WrappedAddModalForm);

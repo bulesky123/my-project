@@ -1,13 +1,15 @@
 import React,{Component} from 'react';
-import { Table ,Button,Input, Select, Row, Col,DatePicker} from 'antd';
+import { Table ,Button,Input, Select, Row, Col,DatePicker,Icon,Upload ,message,Form} from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
-
+import {post} from '../../axios/tools'
+import config from '../../axios/config'
 const {Option} = Select;
+const FormItem = Form.Item;
 const {RangePicker} = DatePicker;
 
 
 
-class Menu extends Component{
+class DataUnusual extends Component{
     constructor(){
         super();
         this.inputData = {
@@ -17,9 +19,6 @@ class Menu extends Component{
     }
     componentDidMount(){
 
-    }
-    handleButton(orderId){
-        alert(orderId)
     }
     handleSelectChange(option, value) {
         if (value == -1) {
@@ -33,8 +32,17 @@ class Menu extends Component{
         this.inputData.startTimeVal = date[0];
         this.inputData.endTimeVal = date[1];
     }
-    handleButtonClick(){
+    handleButton(orderId){
+        alert(orderId)
+    }
+    addTable(){
         alert('搜索')
+    }
+    searchTable(){
+
+    }
+    importTable(){
+
     }
     render(){
         const columns = [
@@ -313,7 +321,7 @@ class Menu extends Component{
                 realEndTime:item.realEndTime,
                 createTime: item.createTime,
                 register:item.register,
-                operation:<Button onClick={this.handleButton.bind(this,item.mainOrderId)}>查看</Button>
+                operation:<div><Button onClick={this.handleButton.bind(this,item)}>详情</Button><Button onClick={this.handleButton.bind(this,item)}>修改</Button><Button onClick={this.handleButton.bind(this,item)}>删除</Button></div>
             }
         });
         //翻页器配置
@@ -326,31 +334,73 @@ class Menu extends Component{
                 alert(page)
             }
         };
+        const uploadParam = {
+          name: 'file',
+          action: config.BASEURL+'getSensorConfFile',
+          /*headers: {
+            authorization: 'authorization-text',
+        },*/
+        beforeUpload(file) {
+            console.log(file)
+              /*const isxls = file.type === 'file/xls';
+              if (!isxls) {
+                message.error('You can only upload JPG file!');
+            }
+            const isLt2M = file.size / 1024 / 1024 < 2;
+            if (!isLt2M) {
+                message.error('Image must smaller than 2MB!');
+            }
+            return isJPG && isLt2M;*/
+        },
+        onChange(info) {
+            if (info.file.status !== 'uploading') {
+              console.log(info.file, info.fileList);
+          }
+            if (info.file.status === 'done') {
+              message.success(`${info.file.name} file uploaded successfully`);
+            } else if (info.file.status === 'error') {
+                message.error(`${info.file.name} file upload failed.`);
+            }
+            },
+
+        };
         return(
             <div className="gutter-example button-demo">
-                <BreadcrumbCustom first="菜单管理" />
-                <h2>模拟异常...</h2>
-                <form className="content-search">
-                <Row>
-                    <Col span={6}>
-                        <Select defaultValue="借款时间" onChange={this.handleSelectChange.bind(this, 'timeType')} style={{minWidth: 100}}>
-                            <Option value="loanTime">借款时间</Option>
-                            <Option value="createTime">接收时间</Option>
-                            <Option value="contractEndTime">合同到期时间</Option>
-                            <Option value="transferTime">起息时间</Option>
-                        </Select>
+                <BreadcrumbCustom first="数据管理" second='模拟异常'/>
+                <Form style={{marginBottom:20,marginTop:20}} layout="inline">
+                <Row > 
+                    <Col md={6} sm={24} >
+                        <FormItem label="事件名称">
+                           <Input onChange={ (e)=>{this.setState({sensor_id:e.target.value})} } placeholder="请输入传感器ID" />
+                        </FormItem>
                     </Col>
-                    <Col span={14}>
-                        <RangePicker format="YYYY-MM-DD" placeholder={['Start Time', 'End Time']} onChange={this.handleRangePickerChange.bind(this)} />
+                    <Col md={6} sm={24}>
+                        <FormItem key="name" label="传感器名称">
+                           <Input onChange={ (e)=>{this.setState({sensor_id:e.target.value})} } placeholder="请输入传感器ID" />
+                        </FormItem>
                     </Col>
-                    <Col span={4}>
-                        <Button type="primary" icon="search" onClick={this.handleButtonClick.bind(this)}>搜索</Button>
-                    </Col>         
-                </Row>
-                </form>
+                    <Col md={6} sm={24}>
+                        <FormItem label="设备名称">
+                            <Input onChange={ (e)=>{this.setState({sensor_name:e.target.value})} } placeholder="请输入传感器名称" />
+                        </FormItem>
+                    </Col>
+                    <Col md={2} sm={24}>
+                        <Button type="primary" onClick={this.searchTable.bind(this)}>查询</Button>
+                    </Col>
+                    <Col md={2} sm={24}>
+                        <Button type="primary" onClick={this.addTable.bind(this)}>添加</Button>
+                    </Col>
+                    <Col md={2} sm={24}>
+                        <Upload {...uploadParam}>
+                            <Button type="primary" onClick={this.importTable.bind(this)}><Icon type="upload" />批量导入</Button>
+                        </Upload>
+                        
+                    </Col>
+                </Row>    
+                </Form>
                 <Table columns={columns} dataSource={data} scroll={{ x: 1600, y:350}}  pagination={pagination}/>
             </div>
         )
     }
 }
-export default Menu;
+export default DataUnusual;

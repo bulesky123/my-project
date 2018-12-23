@@ -1,8 +1,14 @@
 import React,{Component} from 'react';
-import { Table ,Button,Input, Select, Row, Col,DatePicker} from 'antd';
+import { Table ,Button,Input, Select, Row, Col,DatePicker,Icon,Upload ,message,Form} from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
+import echarts from 'echarts';
+import {post} from '../../axios/tools'
+import config from '../../axios/config'
 
+
+import {chartData} from '../../api/chartArr';
 const {Option} = Select;
+const FormItem = Form.Item;
 const {RangePicker} = DatePicker;
 
 
@@ -16,7 +22,93 @@ class Menu extends Component{
         };
     }
     componentDidMount(){
-
+        let myChart = echarts.init(document.getElementById('myChart'));
+        let option = {
+        title: {
+            text: 'Beijing AQI'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        xAxis: {
+            data: chartData.map(function (item) {
+                return item[0];
+            })
+        },
+        yAxis: {
+            splitLine: {
+                show: false
+            }
+        },
+        toolbox: {
+            left: 'center',
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        dataZoom: [{
+            startValue: '2014-06-01'
+        }, {
+            type: 'inside'
+        }],
+        visualMap: {
+            top: 10,
+            right: 10,
+            pieces: [{
+                gt: 0,
+                lte: 50,
+                color: '#096'
+            }, {
+                gt: 50,
+                lte: 100,
+                color: '#ffde33'
+            }, {
+                gt: 100,
+                lte: 150,
+                color: '#ff9933'
+            }, {
+                gt: 150,
+                lte: 200,
+                color: '#cc0033'
+            }, {
+                gt: 200,
+                lte: 300,
+                color: '#660099'
+            }, {
+                gt: 300,
+                color: '#7e0023'
+            }],
+            outOfRange: {
+                color: '#999'
+            }
+        },
+        series: {
+            name: 'Beijing AQI',
+            type: 'line',
+            data: chartData.map(function (item) {
+                return item[1];
+            }),
+            markLine: {
+                silent: true,
+                data: [{
+                    yAxis: 50
+                }, {
+                    yAxis: 100
+                }, {
+                    yAxis: 150
+                }, {
+                    yAxis: 200
+                }, {
+                    yAxis: 300
+                }]
+            }
+        }
+    }
+        myChart.setOption(option);
     }
     handleButton(orderId){
         alert(orderId)
@@ -36,319 +128,48 @@ class Menu extends Component{
     handleButtonClick(){
         alert('搜索')
     }
+    handleChange(value) {
+        console.log(`Selected: ${value}`);
+    }
     render(){
-        const columns = [
-            {title: '异常事件id', dataIndex: 'mainOrderId', key: 'mainOrderId',fixed: 'left', width: 160 },
-            {title: '异常事件名称', dataIndex: 'nameRegister', key: 'nameRegister', width: 70},
-            {title: '传感器id', dataIndex: 'matchStatus', key: 'matchStatus', width: 100},
-            {title: '传感器名称', dataIndex: 'name', key: 'name', width: 70},
-            {title: '设备名称', dataIndex: 'loanAmount', key: 'loanAmount', width: 100},
-            {title: '功能名称', dataIndex: 'bidRate', key: 'bidRate', width: 100},
-            {title: '趋势', dataIndex: 'cycle', key: 'cycle', width: 100},
-            {title: '均值', dataIndex: 'cycleType', key: 'cycleType', width: 100},
-            {title: '方差', dataIndex: 'migrated', key: 'migrated', width: 70},
-            {title: '开始时间', dataIndex: 'matchTime', key: 'matchTime', width:150},
-            {title: '持续时间', dataIndex: 'realEndTime', key: 'realEndTime' ,width: 150},
-            {title: '结束时间', dataIndex: 'contractEndTime', key: 'contractEndTime', width: 120},
-            {title: '创建时间', dataIndex: 'createTime', key: 'createTime' ,width: 150},
-            {title: '操作人', dataIndex: 'register', key: 'register', width: 70},
-            {title: '操作', dataIndex: 'operation', key: 'operation', fixed: 'right',align:'center'},
-        ];
-        const rows = [{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        }];
-        let data = rows.map((item,index)=>{
-            return {
-                key: index,
-                mainOrderId: item.mainOrderId,
-                nameRegister: item.nameRegister,
-                matchStatus: item.matchStatus,
-                name:item.name,
-                loanAmount: item.loanAmount,
-                bidRate: item.bidRate,
-                cycle: item.cycle,
-                cycleType: item.cycleType,
-                migrated: item.migrated,
-                matchTime:item.matchTime,
-                transferTime: item.strTransferTime,
-                contractEndTime:item.contractEndTime,
-                realEndTime:item.realEndTime,
-                createTime: item.createTime,
-                register:item.register,
-                operation:<Button onClick={this.handleButton.bind(this,item.mainOrderId)}>查看</Button>
-            }
-        });
-        //翻页器配置
-        let pagination = {
-            size:"small",
-            pageSize: 20,
-            defaultCurrent: 1,
-            total: 100,
-            onChange: (page) => {
-                alert(page)
-            }
-        };
         return(
-            <div className="gutter-example button-demo">
-                <BreadcrumbCustom first="菜单管理" />
-                <h2>数据监控...</h2>
-                <form className="content-search">
-                <Row>
-                    <Col span={6}>
-                        <Select defaultValue="借款时间" onChange={this.handleSelectChange.bind(this, 'timeType')} style={{minWidth: 100}}>
-                            <Option value="loanTime">借款时间</Option>
-                            <Option value="createTime">接收时间</Option>
-                            <Option value="contractEndTime">合同到期时间</Option>
-                            <Option value="transferTime">起息时间</Option>
-                        </Select>
+            <div>
+                <BreadcrumbCustom first="数据监控" />
+                <Form style={{marginBottom:20,marginTop:20}} layout="inline">
+                    <Row > 
+                    <Col md={10} sm={24}>
+                        <FormItem key="name" label="展示传感器">
+                            <Select
+                            mode="multiple"
+                            size='default'
+                            placeholder="选择传感器"
+                            defaultValue={['1', '2']}
+                            onChange={this.handleChange}
+                            style={{ minWidth: '100' }}
+                            >
+                                <Option value="1">c000001_A传感器</Option>
+                                <Option value="2">c000002_B传感器</Option>
+                                <Option value="3">c000003_C传感器</Option>
+                                <Option value="4">c000004_C传感器</Option>
+                                <Option value="5">c000005_C传感器</Option>
+                                <Option value="6">c000006_C传感器</Option>
+                            </Select>
+                        </FormItem>
                     </Col>
-                    <Col span={14}>
-                        <RangePicker format="YYYY-MM-DD" placeholder={['Start Time', 'End Time']} onChange={this.handleRangePickerChange.bind(this)} />
+                    <Col md={9} sm={24} >
+                        <FormItem label="开始时间">
+                            <RangePicker format="YYYY-MM-DD" placeholder={['开始时间', '结束时间']} onChange={this.handleRangePickerChange.bind(this)}/> 
+                        </FormItem>
+                    </Col> 
+                    <Col md={2} sm={24}>
+                        <Button type="primary">查询</Button>
                     </Col>
-                    <Col span={4}>
-                        <Button type="primary" icon="search" onClick={this.handleButtonClick.bind(this)}>搜索</Button>
-                    </Col>         
-                </Row>
-                </form>
-                <Table columns={columns} dataSource={data} scroll={{ x: 1600, y:350}}  pagination={pagination}/>
+                    <Col md={3} sm={24}>
+                        <Button type="primary">添加异常事件</Button>
+                    </Col>
+                </Row>    
+                </Form>
+                <div id="myChart" style={{ marginTop:20,width: 800, height: 500}}></div>
             </div>
         )
     }

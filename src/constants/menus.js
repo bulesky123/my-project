@@ -1,9 +1,9 @@
 export const menus_old = [
     {
         key: '/app/data-monitor', title: '数据监控', icon: 'bank',id:'3333',
-        sub: [
+        /*sub: [
             {key: '/app/data-monitor', title: '数据监控', icon: 'exception'},
-        ],
+        ],*/
     },
     {
         key: '/app/event', title: '事件诊断', icon: 'contacts',

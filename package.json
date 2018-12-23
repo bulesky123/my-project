@@ -20,6 +20,7 @@
     "dotenv": "4.0.0",
     "draftjs-to-html": "^0.7.2",
     "draftjs-to-markdown": "^0.4.2",
+    "echarts": "^4.2.0-rc.2",
     "echarts-for-react": "^1.4.4",
     "es6-shim": "^0.35.3",
     "eslint": "3.19.0",

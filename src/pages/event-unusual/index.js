@@ -1,13 +1,20 @@
 import React,{Component} from 'react';
-import { Table ,Button,Input, Select, Row, Col,DatePicker} from 'antd';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Table ,Button,Input, Form, Row, Col,DatePicker,Menu} from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
+import {post,get} from '../../axios/tools';
+import config from '../../axios/config';
 
-const {Option} = Select;
+import fetchEventUnusual  from '../../action/event-unusual';
+
+import './css/index.less'
 const {RangePicker} = DatePicker;
+const FormItem = Form.Item;
 
 
-
-class Menu extends Component{
+class EventUnusal extends Component{
     constructor(){
         super();
         this.inputData = {
@@ -16,17 +23,10 @@ class Menu extends Component{
         };
     }
     componentDidMount(){
-
+        this.props.fetchEventUnusual()   
     }
     handleButton(orderId){
-        alert(orderId)
-    }
-    handleSelectChange(option, value) {
-        if (value == -1) {
-            this.inputData[option] = null;
-        } else {
-            this.inputData[option] = value;
-        }
+        this.props.history.push(`/app/event/echart/${orderId}`);
     }
 
     handleRangePickerChange(moment, date) {
@@ -34,9 +34,10 @@ class Menu extends Component{
         this.inputData.endTimeVal = date[1];
     }
     handleButtonClick(){
-        alert('搜索')
+        this.props.fetchEventUnusual({})  
     }
     render(){
+        const {eventList,a=30,b=20,pageSize=20,total=50} = this.props.FetchList
         const columns = [
             {title: '异常事件id', dataIndex: 'mainOrderId', key: 'mainOrderId',fixed: 'left', width: 160 },
             {title: '异常事件名称', dataIndex: 'nameRegister', key: 'nameRegister', width: 70},
@@ -54,248 +55,8 @@ class Menu extends Component{
             {title: '操作人', dataIndex: 'register', key: 'register', width: 70},
             {title: '操作', dataIndex: 'operation', key: 'operation', fixed: 'right',align:'center'},
         ];
-        const rows = [{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        },{
-            "mainOrderId": "15f8b935-b589-4b29-8471-c86a2375a431",
-            "nameRegister": "李四",
-            "matchStatus": '15f8b935-b589-4b29-8471',
-            "name": '设备',
-            "loanAmount": "300.00",
-            "bidRate": "36.00%",
-            "cycle": 50,
-            "cycleType": 1,
-            "migrated": 0,           
-            "matchTime": 1545221951,
-            "contractEndTime": 1549468799,
-            "realEndTime": 1549468799,
-            "createTime":1549468734,
-            "register":'张三'
-        }];
-        let data = rows.map((item,index)=>{
+        
+        let data = eventList&&eventList.map((item,index)=>{
             return {
                 key: index,
                 mainOrderId: item.mainOrderId,
@@ -313,44 +74,50 @@ class Menu extends Component{
                 realEndTime:item.realEndTime,
                 createTime: item.createTime,
                 register:item.register,
-                operation:<Button onClick={this.handleButton.bind(this,item.mainOrderId)}>查看</Button>
+                operation:<Button onClick={this.handleButton.bind(this,item.mainOrderId)}>异常分析</Button>
             }
         });
         //翻页器配置
         let pagination = {
-            size:"small",
-            pageSize: 20,
+            // size:"small",
+            pageSize: pageSize,
             defaultCurrent: 1,
-            total: 100,
+            total: total,
             onChange: (page) => {
                 alert(page)
             }
         };
         return(
-            <div className="gutter-example button-demo">
-                <BreadcrumbCustom first="菜单管理" />
-                <h2>数据事件...</h2>
-                <form className="content-search">
-                <Row>
-                    <Col span={6}>
-                        <Select defaultValue="借款时间" onChange={this.handleSelectChange.bind(this, 'timeType')} style={{minWidth: 100}}>
-                            <Option value="loanTime">借款时间</Option>
-                            <Option value="createTime">接收时间</Option>
-                            <Option value="contractEndTime">合同到期时间</Option>
-                            <Option value="transferTime">起息时间</Option>
-                        </Select>
-                    </Col>
-                    <Col span={14}>
-                        <RangePicker format="YYYY-MM-DD" placeholder={['Start Time', 'End Time']} onChange={this.handleRangePickerChange.bind(this)} />
-                    </Col>
-                    <Col span={4}>
-                        <Button type="primary" icon="search" onClick={this.handleButtonClick.bind(this)}>搜索</Button>
-                    </Col>         
-                </Row>
-                </form>
-                <Table columns={columns} dataSource={data} scroll={{ x: 1600, y:350}}  pagination={pagination}/>
+            <div className="EventUnusal">
+                <BreadcrumbCustom first="事件诊断" second="异常事件"/>
+                <div className='btnGroup'>
+                    <Button type="primary" style={{marginRight:20}}>圈选异常事件({a})</Button>
+                    <Button type="primary">系统异常事件({b})</Button>
+                </div>
+                <Form style={{marginBottom:20}}>
+                    <Row>
+                        <Col>
+                            <span style={{paddingRight:10}}>发生时间：</span>
+                            <RangePicker format="YYYY-MM-DD" placeholder={['开始时间', '结束时间']} onChange={this.handleRangePickerChange.bind(this)} style={{paddingRight:10}}/>
+                            <Button type="primary" icon="search" onClick={this.handleButtonClick.bind(this)}>搜索</Button>
+                        </Col>
+                    </Row>
+                </Form>
+                <Table columns={columns} dataSource={data} scroll={{ x: 1600, y:300}}  pagination={pagination}/>
             </div>
         )
     }
 }
-export default Menu;
+
+
+//要state什么属性放到props里面
+const mapStateToProps = (state) => {
+    
+    return state;
+};
+//要什么方法，放到props里面,自动dispath
+const mapDispatchToProps = (dispatch) => ({
+    fetchEventUnusual: bindActionCreators(fetchEventUnusual, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EventUnusal));

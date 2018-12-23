@@ -1,28 +1,16 @@
 //多个reducers合并
-import { combineReducers } from 'redux';
-import * as type from '../action/type';
 
-const handleData = (state = {isFetching: true, data: {}}, action) => {
-    switch (action.type) {
-        case type.REQUEST_DATA:
-            return {...state, isFetching: true};
-        case type.RECEIVE_DATA:
-            return {...state, isFetching: false, data: action.data};
-        default:
-            return {...state};
-    }
-};
-const httpData = (state = {}, action) => {
-    switch (action.type) {
-        case type.RECEIVE_DATA:
-        case type.REQUEST_DATA:
-            return {
-                ...state,
-                [action.category]: handleData(state[action.category], action)
-            };
-        default:
-            return {...state};
-    }
-};
 
-export default combineReducers({httpData});
+import {combineReducers} from 'redux'
+import httpData from './home'
+import FetchList from './event-unusual'
+/*
+ combineReducers() 所做的只是生成一个函数，这个函数来调用你的一系列 reducer，
+ 每个 reducer 根据它们的 key 来筛选出 state 中的一部分数据并处理，
+ 然后这个生成的函数再将所有 reducer 的结果合并成一个大的对象。
+ */
+const rootReducer = combineReducers({
+    httpData,
+    FetchList
+});
+export default rootReducer

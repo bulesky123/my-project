@@ -1,4 +1,4 @@
-import * as type from './type';
+import type from '../constants/actionType';
 import * as http from '../axios/index';
 
 const requestData = (category) => ({

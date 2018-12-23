@@ -13,12 +13,15 @@ import DataImitate from '../pages/data-imitate/';
 
 import EventReport from '../pages/event-report/';
 import EventUnusual from '../pages/event-unusual/';
+
+import EventUnusualChart from '../pages/event-unusual/components/unusual-chart';
 export default class CRouter extends Component {
     render() {
         return (
             <Switch>
                 <Route exact path="/app/dashboard/index" component={Dashboard} />
                 <Route exact path="/app/event/unusual" component={EventUnusual} />
+                <Route exact path="/app/event/echart/:orderid" component={EventUnusualChart} />
                 <Route exact path="/app/event/data-report" component={EventReport} />
                 
                 

@@ -1,11 +1,12 @@
 import React,{Component} from 'react';
-import { Table ,Button,Input, Select, Row, Col,DatePicker,Icon,Upload ,message,Form} from 'antd';
+import { Table ,Modal,Button,Input, Select, Row, Col,DatePicker,Icon,Upload ,message,Form} from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
+import WrappedAddModalForm from './components/addModalFrom';
 import echarts from 'echarts';
 import {post} from '../../axios/tools'
 import config from '../../axios/config'
-
-
+//http://echarts.baidu.com/examples/editor.html?c=line-marker
+//http://echarts.baidu.com/examples/editor.html?c=line-aqi
 import {chartData} from '../../api/chartArr';
 const {Option} = Select;
 const FormItem = Form.Item;
@@ -16,9 +17,13 @@ const {RangePicker} = DatePicker;
 class Menu extends Component{
     constructor(){
         super();
+        this.state={
+            addModalVisible:false,
+        };
         this.inputData = {
             startTimeVal: null,      //开始时间
             endTimeVal: null,         //结束时间
+            
         };
     }
     componentDidMount(){
@@ -126,7 +131,11 @@ class Menu extends Component{
         this.inputData.endTimeVal = date[1];
     }
     handleButtonClick(){
-        alert('搜索')
+        this.setState({addModalVisible:true})
+    }
+    //关闭添加弹窗Modal
+    hideAddModal(){
+        this.setState({addModalVisible:false})
     }
     handleChange(value) {
         console.log(`Selected: ${value}`);
@@ -145,7 +154,7 @@ class Menu extends Component{
                             placeholder="选择传感器"
                             defaultValue={['1', '2']}
                             onChange={this.handleChange}
-                            style={{ minWidth: '100px' }}
+                            style={{ minWidth: '150px' }}
                             >
                                 <Option value="1">c000001_A传感器</Option>
                                 <Option value="2">c000002_B传感器</Option>
@@ -155,21 +164,50 @@ class Menu extends Component{
                                 <Option value="6">c000006_C传感器</Option>
                             </Select>
                         </FormItem>
+                        
                     </Col>
-                    <Col md={9} sm={24} >
-                        <FormItem label="开始时间">
-                            <RangePicker format="YYYY-MM-DD" placeholder={['开始时间', '结束时间']} onChange={this.handleRangePickerChange.bind(this)}/> 
+                    <Col md={10} sm={24}>
+                        <FormItem label="展示维度">
+                            <Select
+                            style={{ minWidth: '150px' }}
+                            defaultValue='近1小时'
+                            
+                            >
+                                <Option value="近1小时">近1小时</Option>
+                                <Option value="近24小时">近24小时</Option>
+                                <Option value="近1个周">近1个周</Option>
+                                <Option value="近1个月">近1个月</Option>
+                            </Select>
+                        </FormItem>
+                    </Col>
+                    <Col md={4} sm={24}>
+                        <Button type="primary" onClick={this.handleButtonClick.bind(this)}>添加异常事件</Button>
+                    </Col>
+                </Row>  
+                <Row style={{marginTop:20}}>
+                    <Col md={20} sm={24} >
+                        <FormItem label='历史查询：'>
+                            <RangePicker format="YYYY-MM-DD HH:mm:ss" placeholder={['开始时间', '结束时间']} onChange={this.handleRangePickerChange.bind(this)}/> 
                         </FormItem>
                     </Col> 
-                    <Col md={2} sm={24}>
+                    <Col md={4} sm={24}>
                         <Button type="primary">查询</Button>
                     </Col>
-                    <Col md={3} sm={24}>
-                        <Button type="primary">添加异常事件</Button>
-                    </Col>
-                </Row>    
+                </Row>   
                 </Form>
-                <div id="myChart" style={{ marginTop:20,width: 800, height: 500}}></div>
+                <div id="myChart" style={{ marginTop:20,width: 1000, height: 450}}></div>
+
+                <Modal
+                title="添加异常事件"
+                visible={this.state.addModalVisible}
+                onOk={this.hideAddModal.bind(this)}
+                onCancel={this.hideAddModal.bind(this)}
+                okText="添加"
+                cancelText="取消"
+                footer={null}
+                >
+                    <WrappedAddModalForm hideModal={this.hideAddModal.bind(this)} />
+                </Modal>
             </div>
         )
     }

@@ -23,7 +23,7 @@ class EventUnusal extends Component{
         };
     }
     componentDidMount(){
-        this.props.fetchEventUnusual()   
+        this.props.fetchEventUnusual({"sensor_id":'',"sensor_name":'',"sensor_type":'气压'})   
     }
     handleButton(orderId){
         this.props.history.push(`/app/event/echart/${orderId}`);

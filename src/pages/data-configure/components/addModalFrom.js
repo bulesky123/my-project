@@ -5,7 +5,7 @@ import {post} from '../../../axios/tools'
 import config from '../../../axios/config'
 import fetchEventUnusual  from '../../../action/event-unusual';
 import {
-  Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete,
+  Form, Input, message,Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete,
 } from 'antd';
 
 const { Option } = Select;
@@ -32,9 +32,14 @@ class AddModalForm extends React.Component {
       if (!err) {  
         console.log('Received values of form: ', values);
         post({url:config.BASEURL+'addSensorConf',data:values}).then((data)=>{
-          this.props.form.resetFields() ;
-          this.props.hideModal();
-          this.props.fetchEventUnusual();
+          if(data.status !== '200'){
+            message.err('添加失败');
+            return; 
+          }
+            this.props.form.resetFields() ;
+            this.props.hideModal();
+            this.props.fetchEventUnusual({"sensor_type":'温度'});
+            message.success('添加成功');
         })
         
       }
@@ -85,13 +90,15 @@ class AddModalForm extends React.Component {
           {...formItemLayout}
           label="传感器类型"
         >
-        {getFieldDecorator('sensor_type', {initialValue:'1'})
+        {getFieldDecorator('sensor_type', {initialValue:'温度'})
         (
             <Select>
-            <Option value="1">温度</Option>
-            <Option value="2">气压</Option>
-            <Option value="3">电力</Option>
-            <Option value="3">湿度</Option>
+            <Option value="温度">温度</Option>
+            <Option value="压强">压强</Option>
+            <Option value="电压">电压</Option>
+            <Option value="电流">电流</Option>
+            <Option value="流量">流量</Option>
+            <Option value="压力">压力</Option>
           </Select> 
           )}
         </Form.Item>
@@ -335,16 +342,16 @@ class AddModalForm extends React.Component {
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          label="传感器类型"
+          label="追溯时间"
         >
-          {getFieldDecorator('space_cordinate_z', {initialValue:'5'})(
+          {getFieldDecorator('time_scope', {initialValue:'5im'})(
                   <Select>
-                      <Option value="5">5min</Option>
-                      <Option value="10">10min</Option>
-                      <Option value="30">30min</Option>
-                      <Option value="100">1h</Option>
-                      <Option value="40">12h</Option>
-                      <Option value="50">24h</Option>
+                      <Option value="5min">5min</Option>
+                      <Option value="10min">10min</Option>
+                      <Option value="30min">30min</Option>
+                      <Option value="1h">1h</Option>
+                      <Option value="12h">12h</Option>
+                      <Option value="24h">24h</Option>
                   </Select>
               )}
           

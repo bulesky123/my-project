@@ -5,7 +5,7 @@ import {post} from '../../../axios/tools'
 import config from '../../../axios/config'
 import fetchEventUnusual  from '../../../action/event-unusual';
 import {
-  Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete,
+  Form, Input, message, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete,
 } from 'antd';
 
 const { Option } = Select;
@@ -20,26 +20,29 @@ class RegistrationForm extends React.Component {
         }
     }
     componentWillMount(){
-        //this.props.form.resetFields();
-        //this.props.form.setFieldsValue({"sensor_name":"111","sensor_id":"eee","sensor_type":"2","function_id":"222","dev_id":"qww","from_id":"234","to_id":"1234","logic_position":"22","space_cordinate_x":"2","space_cordinate_y":"2","space_cordinate_z":"50","mean_val":"23","mse_val":"12.3","smooth_m":"2","smooth_n":"23","abnormal_a1":"234","abnormal_b1":"23","abnormal_a2":"33","abnormal_b2":"33","abnormal_a3":"33","abnormal_b3":"44"})
+        this.props.form.resetFields();
     }
     componentDidMount(){
-        //this.props.form.resetFields();
-        const defaultValue = this.props.defaultValue
-        //const obj = {"sensor_name":"111","sensor_id":"eee","sensor_type":"2","function_id":"222","dev_id":"qww","from_id":"234","to_id":"1234","logic_position":"22","space_cordinate_x":"2","space_cordinate_y":"2","space_cordinate_z":"50","mean_val":"23","mse_val":"12.3","smooth_m":"2","smooth_n":"23","abnormal_a1":"234","abnormal_b1":"23","abnormal_a2":"33","abnormal_b2":"33","abnormal_a3":"33","abnormal_b3":"44"}
-        this.props.form.setFieldsValue(defaultValue)
     
     }
 
   handleSubmit = (e) => {
+    const sensor_type = this.props.formValue.sensor_type
+    const id = this.props.formValue.id
     e.preventDefault(); 
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {  
         console.log('Received values of form: ', values);
-        post({url:config.BASEURL+'addSensorConf',data:values}).then((data)=>{
+        let submitData = Object.assign({id:id}, values);
+        post({url:config.BASEURL+'reviseSensorConf',data:submitData}).then((data)=>{
+          if(data.status !== '200'){
+            message.err('修改失败');
+            return; 
+          }
           this.props.form.resetFields() ;
           this.props.hideModal();
-          this.props.fetchEventUnusual();
+          this.props.fetchEventUnusual({"sensor_type":sensor_type});
+          message.success('修改成功');
         })
         
       }
@@ -51,7 +54,7 @@ class RegistrationForm extends React.Component {
   }
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { isEditModal } = this.props;
+    const { isEditModal ,formValue} = this.props;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -62,7 +65,6 @@ class RegistrationForm extends React.Component {
         sm: { span: 16 },
       },
     };
-    //this.props.form.setFieldsValue({})
     return (
       <div>
       <Form onSubmit={this.handleSubmit}>
@@ -70,8 +72,9 @@ class RegistrationForm extends React.Component {
           {...formItemLayout}
           label='传感器名称&nbsp;'
         >
-          {getFieldDecorator('sensor_name', {
+          {getFieldDecorator('sensor_name',{
             rules: [{ required: true, message: '请输入传感器名称!', whitespace: true }],
+            initialValue:formValue.sensor_name
           })(
             <Input readOnly={isEditModal?"":"readOnly"}/>
           )}
@@ -82,6 +85,7 @@ class RegistrationForm extends React.Component {
         >
           {getFieldDecorator('sensor_id', {
             rules: [{ required: true, message: '请输入传感器id!', whitespace: true }],
+            initialValue:formValue.sensor_id
           })(
             <Input readOnly={isEditModal?"":"readOnly"}/>
           )}
@@ -90,13 +94,15 @@ class RegistrationForm extends React.Component {
           {...formItemLayout}
           label="传感器类型"
         >
-        {getFieldDecorator('sensor_type', {initialValue:'1'})
+        {getFieldDecorator('sensor_type', {initialValue:formValue.sensor_type})
         (
             <Select>
-            <Option key='1' value="1">温度</Option>
-            <Option key='2' value="2">气压</Option>
-            <Option key='3' value="3">电力</Option>
-            <Option key='4' value="3">湿度</Option>
+            <Option value="温度">温度</Option>
+            <Option value="压强">压强</Option>
+            <Option value="电压">电压</Option>
+            <Option value="电流">电流</Option>
+            <Option value="流量">流量</Option>
+            <Option value="压力">压力</Option>
           </Select> 
           )}
         </Form.Item>
@@ -106,6 +112,7 @@ class RegistrationForm extends React.Component {
         >
           {getFieldDecorator('function_id', {
             rules: [{ required: true, message: '请输入功能id!', whitespace: true }],
+            initialValue:formValue.function_id
           })(
             <Input readOnly={isEditModal?"":"readOnly"}/>
           )}
@@ -116,6 +123,7 @@ class RegistrationForm extends React.Component {
         >
           {getFieldDecorator('dev_id', {
             rules: [{ required: true, message: '请输入设备id!', whitespace: true }],
+            initialValue:formValue.dev_id
           })(
             <Input readOnly={isEditModal?"":"readOnly"}/>
           )}
@@ -124,7 +132,7 @@ class RegistrationForm extends React.Component {
           {...formItemLayout}
           label='上游传感器id&nbsp;'
         >
-            {getFieldDecorator('from_id', {})(
+            {getFieldDecorator('from_id', {initialValue:formValue.from_id})(
             <Input readOnly={isEditModal?"":"readOnly"}/>
           )}
 
@@ -133,7 +141,7 @@ class RegistrationForm extends React.Component {
           {...formItemLayout}
           label='下游传感器id&nbsp;'
         >
-            {getFieldDecorator('to_id', {})(
+            {getFieldDecorator('to_id', {initialValue:formValue.to_id})(
             <Input readOnly={isEditModal?"":"readOnly"}/>
           )}
         </Form.Item>
@@ -141,7 +149,7 @@ class RegistrationForm extends React.Component {
           {...formItemLayout}
           label='逻辑位置&nbsp;'
         >
-            {getFieldDecorator('logic_position', {})(
+            {getFieldDecorator('logic_position', {initialValue:formValue.logic_position})(
             <Input readOnly={isEditModal?"":"readOnly"}/>
           )}
         </Form.Item>
@@ -155,7 +163,7 @@ class RegistrationForm extends React.Component {
                 {...formItemLayout}
                 label='X&nbsp;'
               >
-                  {getFieldDecorator('space_cordinate_x', {})(
+                  {getFieldDecorator('space_cordinate_x', {initialValue:formValue.space_cordinate_x})(
                   <Input readOnly={isEditModal?"":"readOnly"}/>
               )}
               </Form.Item>
@@ -165,7 +173,7 @@ class RegistrationForm extends React.Component {
                 {...formItemLayout}
                 label='Y&nbsp;'
               >
-                  {getFieldDecorator('space_cordinate_y', {})(
+                  {getFieldDecorator('space_cordinate_y', {initialValue:formValue.space_cordinate_y})(
                   <Input readOnly={isEditModal?"":"readOnly"}/>
               )}
               </Form.Item>
@@ -175,7 +183,7 @@ class RegistrationForm extends React.Component {
                 {...formItemLayout}
                 label='Z&nbsp;'
               >
-                  {getFieldDecorator('space_cordinate_z', {})(
+                  {getFieldDecorator('space_cordinate_z', {initialValue:formValue.space_cordinate_z})(
                   <Input readOnly={isEditModal?"":"readOnly"}/>
               )}
               </Form.Item>
@@ -188,6 +196,7 @@ class RegistrationForm extends React.Component {
         >
           {getFieldDecorator('mean_val', {
             rules: [{ required: true, message: '请输入均值!', whitespace: true }],
+            initialValue:formValue.mean_val+""
           })(
             <Input readOnly={isEditModal?"":"readOnly"}/>
           )}
@@ -198,6 +207,7 @@ class RegistrationForm extends React.Component {
         >
           {getFieldDecorator('mse_val', {
             rules: [{ required: true, message: '请输入方差!', whitespace: true }],
+            initialValue:formValue.mse_val+""
           })(
             <Input readOnly={isEditModal?"":"readOnly"}/>
           )}
@@ -214,6 +224,7 @@ class RegistrationForm extends React.Component {
               >
                 {getFieldDecorator('smooth_m', {
                   rules: [{ required: true, message: '请输入m!', whitespace: true }],
+                  initialValue:formValue.smooth_m+""
                 })(
                 <Input readOnly={isEditModal?"":"readOnly"}/>
                 )}
@@ -226,6 +237,7 @@ class RegistrationForm extends React.Component {
               >
                 {getFieldDecorator('smooth_n', {
                   rules: [{ required: true, message: '请输入n!',whitespace: true }],
+                  initialValue:formValue.smooth_n+""
                 })(
                 <Input readOnly={isEditModal?"":"readOnly"}/>
                 )}
@@ -251,6 +263,7 @@ class RegistrationForm extends React.Component {
               >
                   {getFieldDecorator('abnormal_a1', {
                   rules: [{ required: true, message: '请输入a1!', whitespace: true }],
+                  initialValue:formValue.abnormal_a1
                   })(
                     <Input readOnly={isEditModal?"":"readOnly"}/>
                   )}
@@ -263,6 +276,7 @@ class RegistrationForm extends React.Component {
               >
                   {getFieldDecorator('abnormal_b1', {
                   rules: [{ required: true, message: '请输入b1!', whitespace: true }],
+                  initialValue:formValue.abnormal_b1
                   })(
                     <Input readOnly={isEditModal?"":"readOnly"}/>
                   )}
@@ -284,6 +298,7 @@ class RegistrationForm extends React.Component {
                 >
                     {getFieldDecorator('abnormal_a2', {
                     rules: [{ required: true, message: '请输入a2!', whitespace: true }],
+                    initialValue:formValue.abnormal_a2
                     })(
                       <Input readOnly={isEditModal?"":"readOnly"}/>
                     )}
@@ -296,6 +311,7 @@ class RegistrationForm extends React.Component {
                 >
                     {getFieldDecorator('abnormal_b2', {
                     rules: [{ required: true, message: '请输入b2!', whitespace: true }],
+                    initialValue:formValue.abnormal_b2
                     })(
                       <Input readOnly={isEditModal?"":"readOnly"}/>
                     )}
@@ -318,6 +334,7 @@ class RegistrationForm extends React.Component {
                 >
                     {getFieldDecorator('abnormal_a3', {
                     rules: [{ required: true, message: '请输入a3!', whitespace: true }],
+                    initialValue:formValue.abnormal_a3
                     })(
                       <Input readOnly={isEditModal?"":"readOnly"}/>
                     )}
@@ -330,6 +347,7 @@ class RegistrationForm extends React.Component {
                 >
                     {getFieldDecorator('abnormal_b3', {
                     rules: [{ required: true, message: '请输入b3!', whitespace: true }],
+                    initialValue:formValue.abnormal_b3
                     })(
                       <Input readOnly={isEditModal?"":"readOnly"}/>
                     )}
@@ -340,16 +358,16 @@ class RegistrationForm extends React.Component {
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          label="传感器类型"
+          label="追溯时间"
         >
-          {getFieldDecorator('space_cordinate_z', {initialValue:'5'})(
+          {getFieldDecorator('time_scope', {initialValue:formValue.time_scope})(
                   <Select>
-                      <Option key='5' value="5">5min</Option>
-                      <Option key='10' value="10">10min</Option>
-                      <Option key='30' value="30">30min</Option>
-                      <Option key='100' value="100">1h</Option>
-                      <Option key='40' value="40">12h</Option>
-                      <Option key='50'value="50">24h</Option>
+                      <Option value="5min">5min</Option>
+                      <Option value="10min">10min</Option>
+                      <Option value="30min">30min</Option>
+                      <Option value="1h">1h</Option>
+                      <Option value="12h">12h</Option>
+                      <Option value="24h">24h</Option>
                   </Select>
               )}
           

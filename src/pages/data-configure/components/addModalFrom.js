@@ -33,7 +33,7 @@ class AddModalForm extends React.Component {
         console.log('Received values of form: ', values);
         post({url:config.BASEURL+'addSensorConf',data:values}).then((data)=>{
           if(data.status !== '200'){
-            message.err('添加失败');
+            message.error('添加失败');
             return; 
           }
             this.props.form.resetFields() ;
@@ -344,7 +344,7 @@ class AddModalForm extends React.Component {
           {...formItemLayout}
           label="追溯时间"
         >
-          {getFieldDecorator('time_scope', {initialValue:'5im'})(
+          {getFieldDecorator('time_scope', {initialValue:'5min'})(
                   <Select>
                       <Option value="5min">5min</Option>
                       <Option value="10min">10min</Option>

@@ -36,7 +36,7 @@ class RegistrationForm extends React.Component {
         let submitData = Object.assign({id:id}, values);
         post({url:config.BASEURL+'reviseSensorConf',data:submitData}).then((data)=>{
           if(data.status !== '200'){
-            message.err('修改失败');
+            message.error('修改失败');
             return; 
           }
           this.props.form.resetFields() ;
@@ -96,7 +96,7 @@ class RegistrationForm extends React.Component {
         >
         {getFieldDecorator('sensor_type', {initialValue:formValue.sensor_type})
         (
-            <Select>
+            <Select disabled={isEditModal?false:true}>
             <Option value="温度">温度</Option>
             <Option value="压强">压强</Option>
             <Option value="电压">电压</Option>
@@ -361,7 +361,7 @@ class RegistrationForm extends React.Component {
           label="追溯时间"
         >
           {getFieldDecorator('time_scope', {initialValue:formValue.time_scope})(
-                  <Select>
+                  <Select disabled={isEditModal?false:true}>
                       <Option value="5min">5min</Option>
                       <Option value="10min">10min</Option>
                       <Option value="30min">30min</Option>

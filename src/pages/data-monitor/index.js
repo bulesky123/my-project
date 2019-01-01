@@ -145,7 +145,7 @@ class Menu extends Component{
                             placeholder="选择传感器"
                             defaultValue={['1', '2']}
                             onChange={this.handleChange}
-                            style={{ minWidth: '100' }}
+                            style={{ minWidth: '100px' }}
                             >
                                 <Option value="1">c000001_A传感器</Option>
                                 <Option value="2">c000002_B传感器</Option>

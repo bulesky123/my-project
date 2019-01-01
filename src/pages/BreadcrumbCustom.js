@@ -27,6 +27,9 @@ class BreadcrumbCustom extends React.Component {
             switcherOn: !this.state.switcherOn
         })
     };
+    isObject(obj){
+        return Object.prototype.toString.call(obj) === "[object Object]"
+    }
     themeChange = (v) => {
         this.setState({
             themes: this.state.themes.map((t, i) => {
@@ -45,7 +48,7 @@ class BreadcrumbCustom extends React.Component {
                 <Switch checked={v.checked} onChange={() => this.themeChange(v)} />
             </div>
         ));
-        const first = <Breadcrumb.Item>{this.props.first}</Breadcrumb.Item> || '';
+        const first = this.isObject(this.props.first)?(<Breadcrumb.Item><Link to={this.props.first.link}>{this.props.first.name}</Link></Breadcrumb.Item>):(<Breadcrumb.Item>{this.props.first}</Breadcrumb.Item>);
         const second = <Breadcrumb.Item>{this.props.second}</Breadcrumb.Item> || '';
         return (
             <span>

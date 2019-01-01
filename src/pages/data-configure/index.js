@@ -61,7 +61,7 @@ class DataConfigure extends Component{
             onOk() {
               post({url:config.BASEURL+'removeSensorConf',data:param}).then((data)=>{
                 if(data.status !== '200'){
-                    message.err('删除失败');
+                    message.error('删除失败');
                     return; 
                 }
                 _this.props.fetchEventUnusual(formParam)
@@ -85,10 +85,6 @@ class DataConfigure extends Component{
             sensor_name:this.state.sensor_name,
         }
         this.props.fetchEventUnusual(searchParam)
-    }
-    //批量导入
-    importTable(){
-
     }
     //关闭添加弹窗Modal
     hideAddModal(){
@@ -200,7 +196,7 @@ class DataConfigure extends Component{
                     </Col>
                     <Col md={2} sm={24}>
                         <Upload {...uploadParam}>
-                            <Button type="primary" onClick={this.importTable.bind(this)}><Icon type="upload" />批量导入</Button>
+                            <Button type="primary"><Icon type="upload" />批量导入</Button>
                         </Upload>
                         
                     </Col>

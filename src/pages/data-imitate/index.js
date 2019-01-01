@@ -1,6 +1,8 @@
 import React,{Component} from 'react';
-import { Table ,Button,Input, Form, Row, Col,DatePicker,Menu,Icon} from 'antd';
+import { Table ,Button,Input, Form, Row, Col,DatePicker,Menu,Icon,message} from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
+import {post} from '../../axios/tools';
+import config from '../../axios/config';
 const {RangePicker} = DatePicker;
 const FormItem = Form.Item;
 
@@ -8,19 +10,26 @@ class DataImitate extends Component{
     constructor(){
         super();
         this.inputData = {
-            startTimeVal: null,      //开始时间
-            endTimeVal: null,         //结束时间
+            start_time: null,      //开始时间
+            end_time: null,         //结束时间
         };
     }
     componentDidMount(){
 
     }
     handleRangePickerChange(moment, date) {
-        this.inputData.startTimeVal = date[0];
-        this.inputData.endTimeVal = date[1];
+        this.inputData.start_time = date[0];
+        this.inputData.end_time = date[1];
     }
     handleButtonClick(){
-         
+        const param = this.inputData
+          post({url:config.BASEURL+'simulationDataRun',data:param}).then((data)=>{
+                if(data.status !== '200'){
+                    message.error('运行失败');
+                    return; 
+                }
+                message.success('运行成功');
+            })
     }
     render(){
         return(
@@ -30,7 +39,7 @@ class DataImitate extends Component{
                     <Row>
                         <Col>
                             <span style={{paddingRight:10}}>开始时间：</span>
-                            <RangePicker format="YYYY-MM-DD" placeholder={['开始时间', '结束时间']} onChange={this.handleRangePickerChange.bind(this)} style={{paddingRight:10}}/>
+                            <RangePicker format="YYYY-MM-DD HH:mm:ss" placeholder={['开始时间', '结束时间']} onChange={this.handleRangePickerChange.bind(this)} style={{paddingRight:10}}/>
                             <Button type="primary"  onClick={this.handleButtonClick.bind(this)}><Icon type="play-circle" />运行</Button>
                         </Col>
                     </Row>

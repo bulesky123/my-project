@@ -80,7 +80,7 @@ class UnusualChart extends Component{
     render(){
         return(
             <div>
-                 <BreadcrumbCustom first="异常事件" second="查看图表"/>
+                 <BreadcrumbCustom first={{link:'/app/event/unusual',name:"异常事件"}} second="查看图表"/>
                 <div id="myChart" style={{ width: 500, height: 500}}></div>
             </div>
         )

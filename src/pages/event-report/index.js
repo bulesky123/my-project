@@ -7,7 +7,7 @@ import BreadcrumbCustom from '../BreadcrumbCustom';
 import {post,get} from '../../axios/tools';
 import config from '../../axios/config';
 
-import fetchEventUnusual  from '../../action/event-unusual';
+import fetchEnentReport  from '../../action/event-report';
 
 import './css/index.less'
 const {RangePicker} = DatePicker;
@@ -18,62 +18,43 @@ class EventUnusal extends Component{
     constructor(){
         super();
         this.inputData = {
-            startTimeVal: null,      //开始时间
-            endTimeVal: null,         //结束时间
+            start_time: null,      //开始时间
+            end_time: null,         //结束时间
         };
     }
     componentDidMount(){
-        this.props.fetchEventUnusual()   
+        this.props.fetchEnentReport(this.inputData)   
     }
 
     handleRangePickerChange(moment, date) {
-        this.inputData.startTimeVal = date[0];
-        this.inputData.endTimeVal = date[1];
+        this.inputData.start_time = date[0];
+        this.inputData.end_time = date[1];
     }
     handleButtonClick(){
-        this.props.fetchEventUnusual({})  
+        this.props.fetchEnentReport(this.inputData)  
     }
     render(){
-        const {eventList,a=30,b=20,pageSize=20,total=50} = this.props.FetchList
+        const {eventReportList,totalCount=0} = this.props.FetchEventReportList;
         const columns = [
-            {title: '异常事件id', dataIndex: 'mainOrderId', key: 'mainOrderId',fixed: 'left', width: 160 },
-            {title: '异常事件名称', dataIndex: 'nameRegister', key: 'nameRegister', width: 70},
-            {title: '传感器id', dataIndex: 'matchStatus', key: 'matchStatus', width: 100},
-            {title: '传感器名称', dataIndex: 'name', key: 'name', width: 70},
-            {title: '设备名称', dataIndex: 'loanAmount', key: 'loanAmount', width: 100},
-            {title: '功能名称', dataIndex: 'bidRate', key: 'bidRate', width: 100},
-            {title: '趋势', dataIndex: 'cycle', key: 'cycle', width: 100},
-            {title: '均值', dataIndex: 'cycleType', key: 'cycleType', width: 100},
-            {title: '方差', dataIndex: 'migrated', key: 'migrated', width: 70},
-            {title: '开始时间', dataIndex: 'matchTime', key: 'matchTime', width:150},
-            {title: '持续时间', dataIndex: 'realEndTime', key: 'realEndTime' ,width: 150},
-            {title: '结束时间', dataIndex: 'contractEndTime', key: 'contractEndTime', width: 120},
-            {title: '创建时间', dataIndex: 'createTime', key: 'createTime' ,width: 150},
-            {title: '操作人', dataIndex: 'register', key: 'register', width: 70}
+            {title: '传感器类型', dataIndex: 'sensor_type', key: 'sensor_type',fixed: 'left'},
+            {title: '系统异常事件(次)', dataIndex: 'sys_abnormal_num', key: 'sys_abnormal_num'},
+            {title: '红色预警(次)', dataIndex: 'red_alarm_num', key: 'red_alarm_num',},
+            {title: '橙色预警(次)', dataIndex: 'orange_alarm_num', key: 'orange_alarm_num',},
+            {title: '黄色预警(次)', dataIndex: 'yellow_alarm_num', key: 'yellow_alarm_num',},
         ];
         
-        let data = eventList&&eventList.map((item,index)=>{
+        let data = eventReportList&&eventReportList.map((item,index)=>{
             return {
                 key: index,
-                mainOrderId: item.mainOrderId,
-                nameRegister: item.nameRegister,
-                matchStatus: item.matchStatus,
-                name:item.name,
-                loanAmount: item.loanAmount,
-                bidRate: item.bidRate,
-                cycle: item.cycle,
-                cycleType: item.cycleType,
-                migrated: item.migrated,
-                matchTime:item.matchTime,
-                transferTime: item.strTransferTime,
-                contractEndTime:item.contractEndTime,
-                realEndTime:item.realEndTime,
-                createTime: item.createTime,
-                register:item.register
+                sensor_type: item.sensor_type,
+                sys_abnormal_num: item.sys_abnormal_num,
+                red_alarm_num: item.red_alarm_num,
+                orange_alarm_num:item.orange_alarm_num,
+                yellow_alarm_num: item.yellow_alarm_num,
             }
         });
         //翻页器配置
-        let pagination = {
+        /*let pagination = {
             // size:"small",
             pageSize: pageSize,
             defaultCurrent: 1,
@@ -81,7 +62,7 @@ class EventUnusal extends Component{
             onChange: (page) => {
                 alert(page)
             }
-        };
+        };*/
         return(
             <div className="EventUnusal">
                 <BreadcrumbCustom first="事件诊断" second="统计报告"/>
@@ -89,12 +70,13 @@ class EventUnusal extends Component{
                     <Row>
                         <Col>
                             <span style={{paddingRight:10}}>发生时间：</span>
-                            <RangePicker format="YYYY-MM-DD" placeholder={['开始时间', '结束时间']} onChange={this.handleRangePickerChange.bind(this)} style={{paddingRight:10}}/>
+                            <RangePicker format="YYYY-MM-DD HH:mm:ss" placeholder={['开始时间', '结束时间']} onChange={this.handleRangePickerChange.bind(this)} style={{paddingRight:10}}/>
                             <Button type="primary" icon="search" onClick={this.handleButtonClick.bind(this)}>搜索</Button>
                         </Col>
                     </Row>
                 </Form>
-                <Table columns={columns} dataSource={data} scroll={{ x: 1600, y:350}}  pagination={pagination}/>
+                <div style={{"marginBottom":10}}>总共<span style={{"color":'red'}}>{totalCount}</span>条：</div>
+                <Table columns={columns} dataSource={data} />
             </div>
         )
     }
@@ -108,7 +90,7 @@ const mapStateToProps = (state) => {
 };
 //要什么方法，放到props里面,自动dispath
 const mapDispatchToProps = (dispatch) => ({
-    fetchEventUnusual: bindActionCreators(fetchEventUnusual, dispatch)
+    fetchEnentReport: bindActionCreators(fetchEnentReport, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EventUnusal));

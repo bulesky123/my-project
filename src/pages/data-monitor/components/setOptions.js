@@ -198,6 +198,7 @@ function setData(params){
 
 function getSensorList(sensorListArr,sensor){
     var realSensorListArr=[];
+    console.log(sensorListArr)
     for(var m=0;m<sensorListArr.length;m++){
         realSensorListArr=realSensorListArr.concat(sensorListArr[m])
     }

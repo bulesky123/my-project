@@ -2,7 +2,7 @@ import types from '../constants/actionType'
 import config from '../axios/config';
 import {post} from '../axios/tools';
 
-function queryAllSensorList(opts = {}) {
+function queryAllSensorList(opts = {},callback) {
     return dispatch => {
         const api = config.BASEURL+'queryAllSensorList';
         post({url:api,data:opts}).then((res)=>{
@@ -10,6 +10,7 @@ function queryAllSensorList(opts = {}) {
             dispatch(
                 pushAllSensorList(res)
                 )
+            callback && callback(res.sensorList)
         }
     })
     }

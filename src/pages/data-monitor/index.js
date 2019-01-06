@@ -43,16 +43,23 @@ class DataMonitor extends Component{
             
         };
     }
+    componentWillMount(){
+        
+    }
     componentDidMount(){
-        this.props.queryAllSensorList({});
-        this.myChart = echarts.init(document.getElementById('myChart'));
+        let _this = this;
+        _this.myChart = echarts.init(document.getElementById('myChart'));
         /*setInterval(()=>{
             this.getEchart();
         },5000)*/
-        this.myChart.on('brushSelected', renderBrushed);
+        _this.props.queryAllSensorList({},(data)=>{
+            _this.getEchart(data);
+        });
+        _this.myChart.on('brushSelected', renderBrushed);
         function renderBrushed(params) {
             if(params.batch[0].selected[0].dataIndex.length>0){
                 console.log(params.batch[0])
+                _this.setState({addModalVisible:true})
             }
             
         }
@@ -96,26 +103,26 @@ class DataMonitor extends Component{
             })
         
     }
-    getEchart(){
-            var valueArr = [],value = this.state.sensorList;
-            for(var i=0;i<value.length;i++){
-                valueArr.push({
-                    "sensor_id":value[i].split('#')[0],
-                    "sensor_name":value[i].split('#')[1],
-                    data:[]
-                })
-            }
-            this.sensorListArr=valueArr;
-            this.props.queryMonitorDataSensorListInitial({
-                "sensor_list":this.state.sensorList,
-                "time_scope":this.state.time_scope,
-            },(res)=>{
-                let res1 = res.length>0 || chartArrData
-                let arr = getSensorList(res1,this.sensorListArr)
-                let series=getOptionData(arr)
-                //let option = setData({series:series})
-                this.myChart.setOption(series);
+    getEchart(param){
+        let valueArr = [],value = param.slice(0,2);
+        for(let i=0;i<value.length;i++){
+            valueArr.push({
+                "sensor_id":value[i].split('#')[0],
+                "sensor_name":value[i].split('#')[1],
+                data:[]
             })
+        }
+        this.sensorListArr=valueArr;
+        this.props.queryMonitorDataSensorListInitial({
+            "sensor_list":value,
+            "time_scope":this.state.time_scope,
+        },(res)=>{
+            let res1 =  res.length>0 ?res:chartArrData
+            let arr = getSensorList(res1,this.sensorListArr)
+            let series=getOptionData(arr)
+            //let option = setData({series:series})
+            this.myChart.setOption(series);
+        })
     }
     selectChange(value){
         this.setState({time_scope:value})
@@ -143,7 +150,7 @@ class DataMonitor extends Component{
                 valueArr.push({
                     "sensor_id":value[i].split('#')[0],
                     "sensor_name":value[i].split('#')[1],
-                    data:[]
+                     "data":[]
                 })
             }
             this.sensorListArr=valueArr;
@@ -153,9 +160,7 @@ class DataMonitor extends Component{
                 "end_time":start_time
             },(res)=>{
                 let res1 = res.length>0 ?res:chartArrData
-                console.log(res1)
                 let arr = getSensorList(res1,this.sensorListArr)
-
                 let series=getOptionData(arr)
                 //let option = setData({series:series})
                 this.myChart.setOption(series,true);
@@ -164,8 +169,6 @@ class DataMonitor extends Component{
     }
     render(){
         const { sensorList=[] ,dataSensorListInitial=[]} =this.props.FetchSensorList
-
-
         return(
             <div>
                 <BreadcrumbCustom first="数据监控" />
@@ -195,7 +198,7 @@ class DataMonitor extends Component{
                             <Select
                             onChange={this.selectChange.bind(this)}
                             style={{ minWidth: '150px' }}
-                            defaultValue='近1小时'
+                            defaultValue='1h'
                             
                             >
                                 <Option value="1h">近1小时</Option>

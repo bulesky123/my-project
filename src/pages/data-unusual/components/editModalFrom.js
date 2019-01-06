@@ -32,7 +32,7 @@ class RegistrationForm extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {  
         console.log('Received values of form: ', values);
-        let submitObj = Object.assign({"start_time":values['start_time_obj'].format('YYYY-MM-DD HH:mm:ss'),"end_time":values['end_time_obj'].format('YYYY-MM-DD HH:mm:ss')}, values);
+        let submitObj = Object.assign({id:id,"start_time":values['start_time_obj'].format('YYYY-MM-DD HH:mm:ss'),"end_time":values['end_time_obj'].format('YYYY-MM-DD HH:mm:ss')}, values);
         post({url:config.BASEURL+'reviseAbnormalConf',data:submitObj}).then((data)=>{
           if(data.status !== '200'){
             message.error('修改失败');

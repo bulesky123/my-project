@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {post} from '../../../axios/tools'
 import config from '../../../axios/config'
-//import fetchDataMonitor  from '../../../action/data-monitor';
+import {queryAllSensorList }  from '../../../action/data-monitor';
 import {
   Form, Input, message,Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button,DatePicker,
 } from 'antd';
@@ -19,7 +19,7 @@ class AddModalForm extends React.Component {
         }
     }
     componentWillMount(){
-        
+        this.props.queryAllSensorList();
     }
     componentDidMount(){
         //this.props.form.resetFields() 
@@ -31,16 +31,16 @@ class AddModalForm extends React.Component {
       if (!err) {  
         console.log('Received values of form: ', values);
         let submitObj = Object.assign({"start_time":values['start_time_obj'].format('YYYY-MM-DD HH:mm:ss'),"end_time":values['end_time_obj'].format('YYYY-MM-DD HH:mm:ss')}, values);
-       /* post({url:config.BASEURL+'addAbnormalConf',data:submitObj}).then((data)=>{
+       console.log(submitObj)
+        post({url:config.BASEURL+'addAbnormalManuCase',data:submitObj}).then((data)=>{
           if(data.status !== '200'){
             message.error('添加失败');
             return; 
           }
             this.props.form.resetFields() ;
             this.props.hideModal();
-            this.props.fetchImitateUnusual({"event_name":'s001_002_08'});
             message.success('添加成功');
-        })*/
+        })
         
       }
     });
@@ -62,7 +62,7 @@ class AddModalForm extends React.Component {
 }
   render() {
     const { getFieldDecorator } = this.props.form;
-
+    const { sensorList=[] } =this.props.FetchSensorList
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -91,12 +91,11 @@ class AddModalForm extends React.Component {
             placeholder="传感器id"
             onChange={this.handleChange}
             >
-            <Option value="1">c000001_A传感器</Option>
-            <Option value="2">c000002_B传感器</Option>
-            <Option value="3">c000003_C传感器</Option>
-            <Option value="4">c000004_C传感器</Option>
-            <Option value="5">c000005_C传感器</Option>
-            <Option value="6">c000006_C传感器</Option>
+            {
+                sensorList.map((item,index)=>{
+                  return(<Option key={index} value={item}>{item}</Option>)
+                })
+            }
             </Select> 
           )}
         </Form.Item>
@@ -165,6 +164,6 @@ const mapStateToProps = (state) => {
 };
 //要什么方法，放到props里面,自动dispath
 const mapDispatchToProps = (dispatch) => ({
-    // fetchDataMonitor: bindActionCreators(fetchDataMonitor, dispatch)
+     queryAllSensorList: bindActionCreators(queryAllSensorList, dispatch)
 });
 export default connect(mapStateToProps, mapDispatchToProps)(WrappedAddModalForm);

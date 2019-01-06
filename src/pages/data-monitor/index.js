@@ -1,134 +1,70 @@
 import React,{Component} from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router-dom';
 import { Table ,Modal,Button,Input, Select, Row, Col,DatePicker,Icon,Upload ,message,Form} from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
 import WrappedAddModalForm from './components/addModalFrom';
+import { setData, getSensorList ,getOptionData } from './components/setOptions';
 import echarts from 'echarts';
 import {post} from '../../axios/tools'
 import config from '../../axios/config'
+import {DateFormat} from '../../utils'
+import {
+    queryAllSensorList , 
+    queryKeySensorList,
+    queryMonitorDataSensorListInitial,
+    queryMonitorDataSensorFilter, 
+
+}  from '../../action/data-monitor';
 //http://echarts.baidu.com/examples/editor.html?c=line-marker
 //http://echarts.baidu.com/examples/editor.html?c=line-aqi
-import {chartData} from '../../api/chartArr';
+//http://echarts.baidu.com/option.html#brush
+import {chartData,chartArrData} from '../../api/chartArr';
 const {Option} = Select;
 const FormItem = Form.Item;
 const {RangePicker} = DatePicker;
 
 
 
-class Menu extends Component{
+class DataMonitor extends Component{
     constructor(){
         super();
         this.state={
             addModalVisible:false,
+            sensorList:['s001_002_08#deddadada'],
+            time_scope:'1h'
         };
+        this.myChart=null;
+        this.sensorListArr=[];
         this.inputData = {
-            startTimeVal: null,      //开始时间
-            endTimeVal: null,         //结束时间
+            start_time: null,      //开始时间
+            end_time: null,         //结束时间
             
         };
     }
     componentDidMount(){
-        let myChart = echarts.init(document.getElementById('myChart'));
-        let option = {
-        title: {
-            text: 'Beijing AQI'
-        },
-        tooltip: {
-            trigger: 'axis'
-        },
-        xAxis: {
-            data: chartData.map(function (item) {
-                return item[0];
-            })
-        },
-        yAxis: {
-            splitLine: {
-                show: false
+        this.props.queryAllSensorList({});
+        this.myChart = echarts.init(document.getElementById('myChart'));
+        /*setInterval(()=>{
+            this.getEchart();
+        },5000)*/
+        this.myChart.on('brushSelected', renderBrushed);
+        function renderBrushed(params) {
+            if(params.batch[0].selected[0].dataIndex.length>0){
+                console.log(params.batch[0])
             }
-        },
-        toolbox: {
-            left: 'center',
-            feature: {
-                dataZoom: {
-                    yAxisIndex: 'none'
-                },
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        dataZoom: [{
-            startValue: '2014-06-01'
-        }, {
-            type: 'inside'
-        }],
-        visualMap: {
-            top: 10,
-            right: 10,
-            pieces: [{
-                gt: 0,
-                lte: 50,
-                color: '#096'
-            }, {
-                gt: 50,
-                lte: 100,
-                color: '#ffde33'
-            }, {
-                gt: 100,
-                lte: 150,
-                color: '#ff9933'
-            }, {
-                gt: 150,
-                lte: 200,
-                color: '#cc0033'
-            }, {
-                gt: 200,
-                lte: 300,
-                color: '#660099'
-            }, {
-                gt: 300,
-                color: '#7e0023'
-            }],
-            outOfRange: {
-                color: '#999'
-            }
-        },
-        series: {
-            name: 'Beijing AQI',
-            type: 'line',
-            data: chartData.map(function (item) {
-                return item[1];
-            }),
-            markLine: {
-                silent: true,
-                data: [{
-                    yAxis: 50
-                }, {
-                    yAxis: 100
-                }, {
-                    yAxis: 150
-                }, {
-                    yAxis: 200
-                }, {
-                    yAxis: 300
-                }]
-            }
+            
         }
-    }
-        myChart.setOption(option);
+
     }
     handleButton(orderId){
         alert(orderId)
     }
-    handleSelectChange(option, value) {
-        if (value == -1) {
-            this.inputData[option] = null;
-        } else {
-            this.inputData[option] = value;
-        }
-    }
 
     handleRangePickerChange(moment, date) {
-        this.inputData.startTimeVal = date[0];
-        this.inputData.endTimeVal = date[1];
+        this.inputData.start_time = date[0];
+        this.inputData.end_time = date[1];
     }
     handleButtonClick(){
         this.setState({addModalVisible:true})
@@ -138,9 +74,98 @@ class Menu extends Component{
         this.setState({addModalVisible:false})
     }
     handleChange(value) {
-        console.log(`Selected: ${value}`);
+            var valueArr = []
+            for(var i=0;i<value.length;i++){
+                valueArr.push({
+                    "sensor_id":value[i].split('#')[0],
+                    "sensor_name":value[i].split('#')[1],
+                    data:[]
+                })
+            }
+            this.sensorListArr=valueArr;
+            this.setState({sensorList:value})
+            this.props.queryMonitorDataSensorListInitial({
+                "sensor_list":value,
+                "time_scope":this.state.time_scope,
+            },(res)=>{
+                let res1 = res.length>0 ?res:chartArrData
+                let arr = getSensorList(res1,this.sensorListArr)
+                let series=getOptionData(arr)
+                //let option = setData({series:series,xAxisData:series})
+                this.myChart.setOption(series,true);
+            })
+        
+    }
+    getEchart(){
+            var valueArr = [],value = this.state.sensorList;
+            for(var i=0;i<value.length;i++){
+                valueArr.push({
+                    "sensor_id":value[i].split('#')[0],
+                    "sensor_name":value[i].split('#')[1],
+                    data:[]
+                })
+            }
+            this.sensorListArr=valueArr;
+            this.props.queryMonitorDataSensorListInitial({
+                "sensor_list":this.state.sensorList,
+                "time_scope":this.state.time_scope,
+            },(res)=>{
+                let res1 = res.length>0 || chartArrData
+                let arr = getSensorList(res1,this.sensorListArr)
+                let series=getOptionData(arr)
+                //let option = setData({series:series})
+                this.myChart.setOption(series);
+            })
+    }
+    selectChange(value){
+        this.setState({time_scope:value})
+        var startTime = new Date().getTime()-1*60*60*1000;
+        this.props.queryMonitorDataSensorListInitial({
+            "sensor_list":this.state.sensorList,
+            "time_scope":value,
+        },(res)=>{
+                let res1 = res.length>0 ?res:chartArrData
+                let arr = getSensorList(res1,this.sensorListArr)
+                let series=getOptionData(arr)
+                //let option = setData({series:series})
+                this.myChart.setOption(series,true);
+        })    
+    }
+    search(){
+        const sensorList = this.state.sensorList
+        const {start_time,end_time} = this.inputData
+        if(!start_time || !end_time || sensorList.length===0){
+            message.error('查询项不能为空(传感器or时间！)')
+            return;
+        }
+        var valueArr = [],value = sensorList;
+            for(var i=0;i<value.length;i++){
+                valueArr.push({
+                    "sensor_id":value[i].split('#')[0],
+                    "sensor_name":value[i].split('#')[1],
+                    data:[]
+                })
+            }
+            this.sensorListArr=valueArr;
+            this.props.queryMonitorDataSensorFilter({
+                "sensor_list":this.state.sensorList,
+                "start_time":start_time,
+                "end_time":start_time
+            },(res)=>{
+                let res1 = res.length>0 ?res:chartArrData
+                console.log(res1)
+                let arr = getSensorList(res1,this.sensorListArr)
+
+                let series=getOptionData(arr)
+                //let option = setData({series:series})
+                this.myChart.setOption(series,true);
+            })
+
     }
     render(){
+        const { sensorList=[] ,dataSensorListInitial=[]} =this.props.FetchSensorList
+
+
         return(
             <div>
                 <BreadcrumbCustom first="数据监控" />
@@ -152,16 +177,15 @@ class Menu extends Component{
                             mode="multiple"
                             size='default'
                             placeholder="选择传感器"
-                            defaultValue={['1', '2']}
-                            onChange={this.handleChange}
+                            defaultValue={[]}
+                            onChange={this.handleChange.bind(this)}
                             style={{ minWidth: '150px' }}
                             >
-                                <Option value="1">c000001_A传感器</Option>
-                                <Option value="2">c000002_B传感器</Option>
-                                <Option value="3">c000003_C传感器</Option>
-                                <Option value="4">c000004_C传感器</Option>
-                                <Option value="5">c000005_C传感器</Option>
-                                <Option value="6">c000006_C传感器</Option>
+                            {
+                                sensorList.map((item,index)=>{
+                                    return(<Option key={item} value={item}>{item}</Option>)
+                                })
+                            }
                             </Select>
                         </FormItem>
                         
@@ -169,14 +193,15 @@ class Menu extends Component{
                     <Col md={10} sm={24}>
                         <FormItem label="展示维度">
                             <Select
+                            onChange={this.selectChange.bind(this)}
                             style={{ minWidth: '150px' }}
                             defaultValue='近1小时'
                             
                             >
-                                <Option value="近1小时">近1小时</Option>
-                                <Option value="近24小时">近24小时</Option>
-                                <Option value="近1个周">近1个周</Option>
-                                <Option value="近1个月">近1个月</Option>
+                                <Option value="1h">近1小时</Option>
+                                <Option value="24h">近24小时</Option>
+                                <Option value="1week">近1个周</Option>
+                                <Option value="1month">近1个月</Option>
                             </Select>
                         </FormItem>
                     </Col>
@@ -191,7 +216,7 @@ class Menu extends Component{
                         </FormItem>
                     </Col> 
                     <Col md={4} sm={24}>
-                        <Button type="primary">查询</Button>
+                        <Button type="primary" onClick={this.search.bind(this)}>查询</Button>
                     </Col>
                 </Row>   
                 </Form>
@@ -212,4 +237,17 @@ class Menu extends Component{
         )
     }
 }
-export default Menu;
+//要state什么属性放到props里面
+const mapStateToProps = (state) => {
+    
+    return state;
+};
+//要什么方法，放到props里面,自动dispath
+const mapDispatchToProps = (dispatch) => ({
+    queryAllSensorList: bindActionCreators(queryAllSensorList, dispatch),
+    queryKeySensorList: bindActionCreators(queryKeySensorList, dispatch),
+    queryMonitorDataSensorListInitial:bindActionCreators(queryMonitorDataSensorListInitial, dispatch),
+    queryMonitorDataSensorFilter:bindActionCreators(queryMonitorDataSensorFilter, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(DataMonitor));

@@ -7,12 +7,6 @@ let option = {
         trigger: 'axis',
 
     },
-/*    xAxis: {
-        gridIndex: 0,
-        data: chartData.map(function (item) {
-            return item[0];
-        })
-    },*/
     yAxis: {
         gridIndex: 0,
         splitLine: {
@@ -32,7 +26,7 @@ let option = {
                 yAxisIndex: false
             },
             brush: {
-                type: ['lineX', 'clear',]
+                type: ['lineX', 'clear','polygon','keep','rect']
             }
         }
     },
@@ -182,77 +176,54 @@ let option = {
     ]*/
 }
 
-
-function setData(params){
-    return Object.assign(
-        {
-            xAxis:{
-                gridIndex: 0,
-                data: params.series[0].data.map(function (item) {
-            return item[1];
+function getSeries(params,markPoint){
+    if(!params || params.length==0){return {}}
+    //设置x轴
+    let xAxis = {
+        gridIndex: 0,
+        data: params[0]&&params[0].map(function (item) {
+            return item[3];
         })
-            },
-            series:params.series
-        },option)
-}
-
-function getSensorList(sensorListArr,sensor){
-    var realSensorListArr=[];
-    console.log(sensorListArr)
-    for(var m=0;m<sensorListArr.length;m++){
-        realSensorListArr=realSensorListArr.concat(sensorListArr[m])
+            
     }
-    for(var i=0;i<realSensorListArr.length;i++){
-        for(var j=0;j<sensor.length;j++){
-            if(realSensorListArr[i][0] == sensor[j].sensor_id){
-                sensor[j].data.push([realSensorListArr[i][3],realSensorListArr[i][2]])
-            }
-        }
-    }
-    return sensor;
-}
-
-
-function getOptionData(arr,markPoint){
-    var series=[];
-    for(var i=0;i<arr.length;i++){
-        if(arr[i].data.length==0){continue;}
-        series.push(
-        {
-            data:arr[i].data.map(function (item) {
-            return item[1];
-        }) ,
-            name: arr[i].sensor_name,
+    let series =[
+        {            
+            data:params[0]&&params[0].map(function (item) {
+                return item[2];
+            }) ,
+            name: params[0]&&params[0].map(function (item) {
+                return item[0];
+            }) ,
             type: 'scatter',
             markPoint : {
                 data : markPoint || []
-            },
-        },
-        {
-            data:arr[i].data.map(function (item) {
-            return item[1];
-        }) ,
-            name: arr[i].sensor_name,
-            type: 'line',
+            }
         }
-        )
+    ];
+    for(let i=0;i<params.length;i++){
+        series.push({
+            data:params[i].map(function (item) {
+            return item[2];
+        }) ,
+            name: params[i].map(function (item) {
+            return item[0];
+        }) ,
+            type: 'line',
+        })
     }
     return Object.assign(
         {
-            xAxis:{
-                gridIndex: 0,
-                data: arr[0]&&arr[0].data.map(function (item) {
-            return item[0];
-        })
-            },
+            xAxis:xAxis,
             series:series
         },option)
 }
 
+
+
+
+
 export {
-    setData,
-    getSensorList,
-    getOptionData
+    getSeries,
 }
 
 

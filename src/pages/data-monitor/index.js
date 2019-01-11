@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { Table ,Modal,Button,Input, Select, Row, Col,DatePicker,Icon,Upload ,message,Form} from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
 import WrappedAddModalForm from './components/addModalFrom';
-import { setData, getSensorList ,getOptionData } from './components/setOptions';
+import {  getSeries } from './components/setOptions';
 import echarts from 'echarts';
 import {post} from '../../axios/tools'
 import config from '../../axios/config'
@@ -36,7 +36,6 @@ class DataMonitor extends Component{
             time_scope:'1h'
         };
         this.myChart=null;
-        this.sensorListArr=[];
         this.inputData = {
             start_time: null,      //开始时间
             end_time: null,         //结束时间
@@ -56,15 +55,29 @@ class DataMonitor extends Component{
             _this.getEchart(data);
         });
         _this.myChart.on('brushSelected', renderBrushed);
-        function renderBrushed(params) {
-            if(params.batch[0].selected[0].dataIndex.length>0){
-                console.log(params.batch[0])
-                _this.setState({addModalVisible:true})
-            }
-            
-        }
 
+       function renderBrushed(params){
+        const dataSensorListInitial = _this.props.FetchSensorList.dataSensorListInitial[0] || []
+        const sensorIdArr = dataSensorListInitial.map((item)=>{return item[0]})
+        const sensorValueArr = dataSensorListInitial.map((item)=>{return item[2]})
+        const sensorTimeArr = dataSensorListInitial.map((item)=>{return item[3]})
+        let select = params.batch[0].selected
+        if(select.length>0){
+            for(let i=0;i<select.length;i++){
+
+            }
+        }
+        if(params.batch[0].selected[i].dataIndex.length>0){
+            var selectId = params.batch[0].selected[1].dataIndex;
+            var selectArr = [];
+            for(var i=0;i<selectId.length;i++){
+                selectArr.push([sensorValueArr[selectId[i]],sensorTimeArr[selectId[i]]])
+            }
+            console.log(selectArr)        
+       } 
+       //_this.setState({addModalVisible:true})
     }
+}
     handleButton(orderId){
         alert(orderId)
     }
@@ -81,46 +94,24 @@ class DataMonitor extends Component{
         this.setState({addModalVisible:false})
     }
     handleChange(value) {
-            var valueArr = []
-            for(var i=0;i<value.length;i++){
-                valueArr.push({
-                    "sensor_id":value[i].split('#')[0],
-                    "sensor_name":value[i].split('#')[1],
-                    data:[]
-                })
-            }
-            this.sensorListArr=valueArr;
-            this.setState({sensorList:value})
-            this.props.queryMonitorDataSensorListInitial({
-                "sensor_list":value,
-                "time_scope":this.state.time_scope,
-            },(res)=>{
-                let res1 = res.length>0 ?res:chartArrData
-                let arr = getSensorList(res1,this.sensorListArr)
-                let series=getOptionData(arr)
-                //let option = setData({series:series,xAxisData:series})
-                this.myChart.setOption(series,true);
-            })
-        
-    }
-    getEchart(param){
-        let valueArr = [],value = param.slice(0,2);
-        for(let i=0;i<value.length;i++){
-            valueArr.push({
-                "sensor_id":value[i].split('#')[0],
-                "sensor_name":value[i].split('#')[1],
-                data:[]
-            })
-        }
-        this.sensorListArr=valueArr;
+        this.setState({sensorList:value})
         this.props.queryMonitorDataSensorListInitial({
             "sensor_list":value,
             "time_scope":this.state.time_scope,
         },(res)=>{
-            let res1 =  res.length>0 ?res:chartArrData
-            let arr = getSensorList(res1,this.sensorListArr)
-            let series=getOptionData(arr)
-            //let option = setData({series:series})
+            let res1 = res.length>0 ?res:chartArrData
+            let series=getSeries(res1)
+            this.myChart.setOption(series,true);
+        })
+        
+    }
+    getEchart(param){
+        let value = param.slice(0,2);
+        this.props.queryMonitorDataSensorListInitial({
+            "sensor_list":value,
+            "time_scope":this.state.time_scope,
+        },(res)=>{
+            let series=getSeries(res)
             this.myChart.setOption(series);
         })
     }
@@ -132,9 +123,7 @@ class DataMonitor extends Component{
             "time_scope":value,
         },(res)=>{
                 let res1 = res.length>0 ?res:chartArrData
-                let arr = getSensorList(res1,this.sensorListArr)
-                let series=getOptionData(arr)
-                //let option = setData({series:series})
+                let series=getSeries(res1)
                 this.myChart.setOption(series,true);
         })    
     }
@@ -145,26 +134,14 @@ class DataMonitor extends Component{
             message.error('查询项不能为空(传感器or时间！)')
             return;
         }
-        var valueArr = [],value = sensorList;
-            for(var i=0;i<value.length;i++){
-                valueArr.push({
-                    "sensor_id":value[i].split('#')[0],
-                    "sensor_name":value[i].split('#')[1],
-                     "data":[]
-                })
-            }
-            this.sensorListArr=valueArr;
-            this.props.queryMonitorDataSensorFilter({
-                "sensor_list":this.state.sensorList,
-                "start_time":start_time,
-                "end_time":start_time
-            },(res)=>{
-                let res1 = res.length>0 ?res:chartArrData
-                let arr = getSensorList(res1,this.sensorListArr)
-                let series=getOptionData(arr)
-                //let option = setData({series:series})
-                this.myChart.setOption(series,true);
-            })
+        this.props.queryMonitorDataSensorFilter({
+            "sensor_list":this.state.sensorList,
+            "start_time":start_time,
+            "end_time":start_time
+        },(res)=>{
+            let series=getSeries(res)
+            this.myChart.setOption(series,true);
+        })
 
     }
     render(){

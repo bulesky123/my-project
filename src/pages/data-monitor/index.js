@@ -75,6 +75,10 @@ class DataMonitor extends Component{
                 }   
             }
         }
+        _this.myChart.dispatchAction({
+           type: 'brush',//选择action行为
+           areas:[]//areas表示选框的集合，此时为空即可。
+      });
         if(!_this.state.addModalVisible&&start_time&&end_time&&sensor_id.length>0){
             _this.setState({
                 selectData:{
@@ -86,6 +90,7 @@ class DataMonitor extends Component{
             setTimeout(()=>{
                 _this.setState({addModalVisible:true})
             },100)
+            
             
         }
     }
@@ -228,10 +233,6 @@ class DataMonitor extends Component{
                 <Modal
                 title="添加异常事件"
                 visible={this.state.addModalVisible}
-                onOk={this.hideAddModal.bind(this)}
-                onCancel={this.hideAddModal.bind(this)}
-                okText="添加"
-                cancelText="取消"
                 footer={null}
                 >
                     <WrappedAddModalForm selectData={selectData} hideModal={this.hideAddModal.bind(this)} />

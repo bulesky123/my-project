@@ -93,7 +93,6 @@ class AddModalForm extends React.Component {
             mode="multiple"
             size='default'
             placeholder="传感器id"
-            disabled={selectData?true:false}
             onChange={this.handleChange}
             >
             {

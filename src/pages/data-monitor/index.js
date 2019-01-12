@@ -51,9 +51,9 @@ class DataMonitor extends Component{
         _this.myChart = echarts.init(document.getElementById('myChart'));
         setInterval(()=>{
             this.getEchart({"sensor_list":this.state.sensorList,"time_scope":'1min'});
-        },10000)
+        },2000)
         _this.props.queryAllSensorList({},(data)=>{
-            _this.getEchart({"sensor_list":data});
+            _this.getEchart({"sensor_list":data[0]});
         });
         _this.myChart.on('brushSelected', renderBrushed);
 
@@ -120,16 +120,15 @@ class DataMonitor extends Component{
         
     }
     getEchart(param){
-        let value = param.sensor_list.slice(0,2);
-        this.myChart.showLoading();
+        //this.myChart.showLoading();
         this.props.queryMonitorDataSensorListInitial({
-            "sensor_list":value,
+            "sensor_list":param.sensor_list,
             "time_scope":param.time_scope || this.state.time_scope,
         },(res)=>{
-            this.myChart.hideLoading();
+            //this.myChart.hideLoading();
             if(res.length==0){return}
             let series=getSeries(res);
-            this.myChart.setOption(series);
+            this.myChart.setOption(series,true);
         })
     }
     selectChange(value){

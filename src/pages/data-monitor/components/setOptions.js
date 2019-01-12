@@ -25,7 +25,7 @@ let option = {
                 yAxisIndex: false
             },
             brush: {
-                type: ['lineX', 'clear','polygon','keep','rect']
+                type: ['lineX', 'clear']
             }
         }
     },
@@ -50,26 +50,26 @@ let option = {
         right: 10,
         pieces: [{
             gt: 0,
-            lte: 10,
+            lte: 20,
             color: '#096'
         }, {
-            gt: 10,
-            lte: 12,
+            gt: 20,
+            lte: 40,
             color: '#ffde33'
         }, {
-            gt: 12,
-            lte: 14,
+            gt: 40,
+            lte: 60,
             color: '#ff9933'
         }, {
-            gt: 14,
-            lte: 16,
+            gt: 60,
+            lte: 80,
             color: '#cc0033'
         }, {
-            gt: 16,
-            lte: 18,
+            gt: 80,
+            lte: 100,
             color: '#660099'
         }, {
-            gt: 20,
+            gt: 100,
             color: '#7e0023'
         }],
         outOfRange: {

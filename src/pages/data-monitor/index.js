@@ -32,8 +32,9 @@ class DataMonitor extends Component{
         super();
         this.state={
             addModalVisible:false,
+            selectData:null,
             sensorList:['s001_002_08#deddadada'],
-            time_scope:'1h'
+            time_scope:'5min'
         };
         this.myChart=null;
         this.inputData = {
@@ -48,11 +49,11 @@ class DataMonitor extends Component{
     componentDidMount(){
         let _this = this;
         _this.myChart = echarts.init(document.getElementById('myChart'));
-        /*setInterval(()=>{
-            this.getEchart();
-        },5000)*/
+        setInterval(()=>{
+            this.getEchart({"sensor_list":this.state.sensorList,"time_scope":'1min'});
+        },10000)
         _this.props.queryAllSensorList({},(data)=>{
-            _this.getEchart(data);
+            _this.getEchart({"sensor_list":data});
         });
         _this.myChart.on('brushSelected', renderBrushed);
 
@@ -62,20 +63,31 @@ class DataMonitor extends Component{
         const sensorValueArr = dataSensorListInitial.map((item)=>{return item[2]})
         const sensorTimeArr = dataSensorListInitial.map((item)=>{return item[3]})
         let select = params.batch[0].selected
+        let sensor_id = []
+        let start_time,end_time
         if(select.length>0){
+            let dataIndex = select[0].dataIndex
+            start_time = sensorTimeArr[dataIndex[0]]
+            end_time = sensorTimeArr[dataIndex[dataIndex.length-1]]
             for(let i=0;i<select.length;i++){
-
+                if(!sensor_id.includes(select[i].seriesName,0)){
+                    sensor_id.push(select[i].seriesName)
+                }   
             }
         }
-        if(params.batch[0].selected[i].dataIndex.length>0){
-            var selectId = params.batch[0].selected[1].dataIndex;
-            var selectArr = [];
-            for(var i=0;i<selectId.length;i++){
-                selectArr.push([sensorValueArr[selectId[i]],sensorTimeArr[selectId[i]]])
-            }
-            console.log(selectArr)        
-       } 
-       //_this.setState({addModalVisible:true})
+        if(!_this.state.addModalVisible&&start_time&&end_time&&sensor_id.length>0){
+            _this.setState({
+                selectData:{
+                            start_time:start_time,
+                            end_time:end_time,
+                            sensor_id:sensor_id
+                        }
+                    })
+            setTimeout(()=>{
+                _this.setState({addModalVisible:true})
+            },100)
+            
+        }
     }
 }
     handleButton(orderId){
@@ -87,44 +99,51 @@ class DataMonitor extends Component{
         this.inputData.end_time = date[1];
     }
     handleButtonClick(){
-        this.setState({addModalVisible:true})
+        this.setState({addModalVisible:true,selectData:null})
     }
     //关闭添加弹窗Modal
     hideAddModal(){
-        this.setState({addModalVisible:false})
+        this.setState({addModalVisible:false,selectData:null})
     }
     handleChange(value) {
         this.setState({sensorList:value})
+        this.myChart.showLoading();
         this.props.queryMonitorDataSensorListInitial({
             "sensor_list":value,
             "time_scope":this.state.time_scope,
         },(res)=>{
-            let res1 = res.length>0 ?res:chartArrData
-            let series=getSeries(res1)
+            this.myChart.hideLoading();
+            if(res.length==0){return}
+            let series=getSeries(res)
             this.myChart.setOption(series,true);
         })
         
     }
     getEchart(param){
-        let value = param.slice(0,2);
+        let value = param.sensor_list.slice(0,2);
+        this.myChart.showLoading();
         this.props.queryMonitorDataSensorListInitial({
             "sensor_list":value,
-            "time_scope":this.state.time_scope,
+            "time_scope":param.time_scope || this.state.time_scope,
         },(res)=>{
-            let series=getSeries(res)
+            this.myChart.hideLoading();
+            if(res.length==0){return}
+            let series=getSeries(res);
             this.myChart.setOption(series);
         })
     }
     selectChange(value){
         this.setState({time_scope:value})
         var startTime = new Date().getTime()-1*60*60*1000;
+        this.myChart.showLoading();
         this.props.queryMonitorDataSensorListInitial({
             "sensor_list":this.state.sensorList,
             "time_scope":value,
         },(res)=>{
-                let res1 = res.length>0 ?res:chartArrData
-                let series=getSeries(res1)
-                this.myChart.setOption(series,true);
+            this.myChart.hideLoading();
+            if(res.length==0){return}
+            let series=getSeries(res)  
+            this.myChart.setOption(series,true);
         })    
     }
     search(){
@@ -139,12 +158,14 @@ class DataMonitor extends Component{
             "start_time":start_time,
             "end_time":start_time
         },(res)=>{
+            if(res.length==0){return}
             let series=getSeries(res)
             this.myChart.setOption(series,true);
         })
 
     }
     render(){
+        const {selectData} = this.state
         const { sensorList=[] ,dataSensorListInitial=[]} =this.props.FetchSensorList
         return(
             <div>
@@ -175,9 +196,12 @@ class DataMonitor extends Component{
                             <Select
                             onChange={this.selectChange.bind(this)}
                             style={{ minWidth: '150px' }}
-                            defaultValue='1h'
+                            defaultValue='1min'
                             
                             >
+                                <Option value="1min">近1分钟</Option>
+                                <Option value="5min">近5分钟</Option>
+                                <Option value="10min">近10分钟</Option>
                                 <Option value="1h">近1小时</Option>
                                 <Option value="24h">近24小时</Option>
                                 <Option value="1week">近1个周</Option>
@@ -211,7 +235,7 @@ class DataMonitor extends Component{
                 cancelText="取消"
                 footer={null}
                 >
-                    <WrappedAddModalForm hideModal={this.hideAddModal.bind(this)} />
+                    <WrappedAddModalForm selectData={selectData} hideModal={this.hideAddModal.bind(this)} />
                 </Modal>
             </div>
         )

@@ -5,7 +5,6 @@ let option = {
     },
     tooltip: {
         trigger: 'axis',
-
     },
     yAxis: {
         gridIndex: 0,
@@ -40,7 +39,9 @@ let option = {
         throttleDelay: 300,
     },
     dataZoom: [{
-        startValue: '1'
+        startValue: '1',
+        /*start:50,
+        end:60*/
     }, {
         type: 'inside'
     }],
@@ -191,28 +192,32 @@ function getSeries(params,markPoint){
             data:params[0]&&params[0].map(function (item) {
                 return item[2];
             }) ,
-            name: params[0]&&params[0].map(function (item) {
-                return item[0];
-            }) ,
+            name: params[0]&&(params[0][0][0]+"#"+params[0][0][1]),
             type: 'scatter',
             markPoint : {
                 data : markPoint || []
             }
         }
     ];
+    let lendArr = [params[0][0][0]+"#"+params[0][0][1]]
     for(let i=0;i<params.length;i++){
+        lendArr.push(params[i][0][0]+"#"+params[i][0][1])
         series.push({
             data:params[i].map(function (item) {
             return item[2];
         }) ,
-            name: params[i].map(function (item) {
-            return item[0];
-        }) ,
+            name: params[i][0][0]+"#"+params[i][0][1],
             type: 'line',
         })
     }
+    
+    let legend = {
+        data: lendArr,
+        top: 40
+    };
     return Object.assign(
         {
+            legend:legend,
             xAxis:xAxis,
             series:series
         },option)

@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import moment from 'moment';
 import {post} from '../../../axios/tools'
 import config from '../../../axios/config'
 import {queryAllSensorList }  from '../../../action/data-monitor';
@@ -62,7 +63,10 @@ class AddModalForm extends React.Component {
 }
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { sensorList=[] } =this.props.FetchSensorList
+    let { sensorList=[] } =this.props.FetchSensorList
+    const selectData = this.props.selectData
+    console.log(this.props)
+    sensorList = selectData ? selectData.sensor_id:sensorList
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -82,18 +86,19 @@ class AddModalForm extends React.Component {
         >
         {getFieldDecorator('sensor_id', {
             rules: [{ required: true, message: '请选择传感器id!', }],
-            // initialValue:'1'
+            initialValue:selectData&&selectData.sensor_id
         })
         (
             <Select
             mode="multiple"
             size='default'
             placeholder="传感器id"
+            disabled={selectData?true:false}
             onChange={this.handleChange}
             >
             {
-                sensorList.map((item,index)=>{
-                  return(<Option key={index} value={item}>{item}</Option>)
+                sensorList&&sensorList.map((item,index)=>{
+                  return(<Option value={item}>{item}</Option>)
                 })
             }
             </Select> 
@@ -104,7 +109,7 @@ class AddModalForm extends React.Component {
           label='异常事件名称&nbsp;'
         >
           {getFieldDecorator('sensor_type', {
-            rules: [{ required: true, message: '请输入异常事件名称!', whitespace: true }],
+            rules: [{ required: true, message: '请输入异常事件名称!' }],
           })(
             <Input/>
           )}
@@ -114,7 +119,8 @@ class AddModalForm extends React.Component {
           label='开始时间&nbsp;'
         >
             {getFieldDecorator('start_time_obj', {
-              rules: [{ required: true, message: '请选择开始时间!' }],
+              rules: [{ required: true, message: '请选择开始时间!',}],
+              initialValue:selectData&&moment(selectData.start_time)
             })(
             <DatePicker
             showTime
@@ -122,6 +128,7 @@ class AddModalForm extends React.Component {
             placeholder="Select Time"
             onChange={this.onChange}
             onOk={this.onOk}
+            disabled={selectData?true:false}
             />
           )}
         </Form.Item>
@@ -130,7 +137,8 @@ class AddModalForm extends React.Component {
           label='结束时间&nbsp;'
         >
             {getFieldDecorator('end_time_obj', {
-              rules: [{ required: true, message: '请选择结束时间!' }],
+              rules: [{ required: true, message: '请选择结束时间!',}],
+              initialValue:selectData&&moment(selectData.end_time)
             })(
             <DatePicker
             showTime
@@ -138,6 +146,7 @@ class AddModalForm extends React.Component {
             placeholder="Select Time"
             onChange={this.onChange}
             onOk={this.onOk}
+            disabled={selectData?true:false}
             />
           )}
         </Form.Item>

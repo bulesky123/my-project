@@ -37,6 +37,7 @@ class DataMonitor extends Component{
             time_scope:'5min'
         };
         this.myChart=null;
+        this.interval=null;
         this.inputData = {
             start_time: null,      //开始时间
             end_time: null,         //结束时间
@@ -49,56 +50,72 @@ class DataMonitor extends Component{
     componentDidMount(){
         let _this = this;
         _this.myChart = echarts.init(document.getElementById('myChart'));
-        setInterval(()=>{
+        this.interval = setInterval(()=>{
             this.getEchart({"sensor_list":this.state.sensorList,"time_scope":'1min'});
-        },2000)
+        },3000)
         _this.props.queryAllSensorList({},(data)=>{
             _this.getEchart({"sensor_list":data[0]});
         });
         _this.myChart.on('brushSelected', renderBrushed);
 
-       function renderBrushed(params){
-        const dataSensorListInitial = _this.props.FetchSensorList.dataSensorListInitial[0] || []
-        const sensorIdArr = dataSensorListInitial.map((item)=>{return item[0]})
-        const sensorValueArr = dataSensorListInitial.map((item)=>{return item[2]})
-        const sensorTimeArr = dataSensorListInitial.map((item)=>{return item[3]})
-        let select = params.batch[0].selected
-        let sensor_id = []
-        let start_time,end_time
-        if(select.length>0){
-            let dataIndex = select[0].dataIndex
-            start_time = sensorTimeArr[dataIndex[0]]
-            end_time = sensorTimeArr[dataIndex[dataIndex.length-1]]
-            for(let i=0;i<select.length;i++){
-                if(!sensor_id.includes(select[i].seriesName,0)){
-                    sensor_id.push(select[i].seriesName)
-                }   
+        function renderBrushed(params){
+            const dataSensorListInitial = _this.props.FetchSensorList.dataSensorListInitial[0] || []
+            const sensorIdArr = dataSensorListInitial.map((item)=>{return item[0]})
+            const sensorValueArr = dataSensorListInitial.map((item)=>{return item[2]})
+            const sensorTimeArr = dataSensorListInitial.map((item)=>{return item[3]})
+            let select = params.batch[0].selected
+            let sensor_id = []
+            let start_time,end_time
+            if(select.length>0){
+                let dataIndex = select[0].dataIndex
+                start_time = sensorTimeArr[dataIndex[0]]
+                end_time = sensorTimeArr[dataIndex[dataIndex.length-1]]
+                for(let i=0;i<select.length;i++){
+                    if(!sensor_id.includes(select[i].seriesName,0)){
+                        sensor_id.push(select[i].seriesName)
+                    }   
+                }
+            }
+            
+            if(!_this.state.addModalVisible&&start_time&&end_time&&sensor_id.length>0){
+                _this.myChart.dispatchAction({
+                    type: 'brush',//选择action行为
+                    areas:[]//areas表示选框的集合，此时为空即可。
+                });
+                _this.setState({
+                    selectData:{
+                        start_time:start_time,
+                        end_time:end_time,
+                        sensor_id:sensor_id
+                    }
+                })
+                setTimeout(()=>{
+                    _this.setState({addModalVisible:true})
+                },100)
             }
         }
-        _this.myChart.dispatchAction({
-           type: 'brush',//选择action行为
-           areas:[]//areas表示选框的集合，此时为空即可。
-      });
-        if(!_this.state.addModalVisible&&start_time&&end_time&&sensor_id.length>0){
-            _this.setState({
-                selectData:{
-                            start_time:start_time,
-                            end_time:end_time,
-                            sensor_id:sensor_id
-                        }
-                    })
-            setTimeout(()=>{
-                _this.setState({addModalVisible:true})
-            },100)
-            
-            
-        }
+        _this.myChart.on('click', function (params) {
+            // 点击事件
+            alert(params)
+        });
+        _this.myChart.on('mouseover', function (params) {
+            // 鼠标滑入
+            clearInterval(_this.interval)
+        });
+        _this.myChart.on('mouseout', function (params) {
+            // 鼠标移开
+            _this.interval = setInterval(()=>{
+            _this.getEchart({"sensor_list":_this.state.sensorList,"time_scope":'1min'});
+        },3000)
+        });
+        _this.myChart.on('legendselectchanged', function(obj) {
+            //图例点击事件
+            //alert(11)
+        })
     }
-}
-    handleButton(orderId){
-        alert(orderId)
+    componentWillUnmount(){
+        clearInterval(this.interval)
     }
-
     handleRangePickerChange(moment, date) {
         this.inputData.start_time = date[0];
         this.inputData.end_time = date[1];
@@ -131,7 +148,7 @@ class DataMonitor extends Component{
             "time_scope":param.time_scope || this.state.time_scope,
         },(res)=>{
             //this.myChart.hideLoading();
-            if(res.length==0){return}
+            if(res==null || res=={}){return}
             let series=getSeries(res);
             this.myChart.setOption(series,true);
         })
@@ -233,6 +250,7 @@ class DataMonitor extends Component{
                 <Modal
                 title="添加异常事件"
                 visible={this.state.addModalVisible}
+                onCancel={this.hideAddModal.bind(this)}
                 footer={null}
                 >
                     <WrappedAddModalForm selectData={selectData} hideModal={this.hideAddModal.bind(this)} />

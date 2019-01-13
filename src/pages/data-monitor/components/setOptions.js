@@ -1,4 +1,4 @@
-import {chartData,chartArrData} from '../../../api/chartArr';
+//import {chartData,chartArrData} from '../../../api/chartArr';
 let option = {
     title: {
         text: '数据监控'
@@ -177,8 +177,9 @@ let option = {
     ]*/
 }
 
-function getSeries(params,markPoint){
-    if(!params || params.length==0){return {}}
+function getSeries(param,markPoint){
+    if(!param || param==null ||  param=={}){return {}}
+    let params = param.data,alarm_level=param.alarm_level;
     //设置x轴
     let xAxis = {
         gridIndex: 0,
@@ -196,10 +197,21 @@ function getSeries(params,markPoint){
             type: 'scatter',
             markPoint : {
                 data : markPoint || []
-            }
+            },
+            /*markPoint : {
+                data : [
+                    {name:'某个坐标',coord: ['2014-09-01', 300]}
+                    ]
+            },*/
         }
     ];
     let lendArr = [params[0][0][0]+"#"+params[0][0][1]]
+   /* let markPointData = [],markPoint=[];
+    for(let i=0;i<alarm_level.length;i++){
+        for(let j=0;j<alarm_level[i].length;j++){
+            
+        }
+    }*/
     for(let i=0;i<params.length;i++){
         lendArr.push(params[i][0][0]+"#"+params[i][0][1])
         series.push({

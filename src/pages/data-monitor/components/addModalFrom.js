@@ -86,7 +86,7 @@ class AddModalForm extends React.Component {
         >
         {getFieldDecorator('sensor_id', {
             rules: [{ required: true, message: '请选择传感器id!', }],
-            initialValue:selectData&&selectData.sensor_id
+            initialValue:selectData?selectData.sensor_id:[]
         })
         (
             <Select
@@ -97,7 +97,7 @@ class AddModalForm extends React.Component {
             >
             {
                 sensorList&&sensorList.map((item,index)=>{
-                  return(<Option value={item}>{item}</Option>)
+                  return(<Option key={item+index} value={item}>{item}</Option>)
                 })
             }
             </Select> 

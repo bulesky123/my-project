@@ -2,6 +2,7 @@ import React,{Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Radio,Button, Row, Col,message,Form} from 'antd';
+import config from '../../../axios/config'
 import {post} from '../../../axios/tools';
 import echarts from 'echarts';
 
@@ -12,7 +13,7 @@ class ModleChart extends Component{
     constructor(){
         super();
         this.state={
-        	value:1
+        	value:'yes'
         }
     }
     createEchart(arr){
@@ -33,7 +34,9 @@ class ModleChart extends Component{
     		{
     			type: 'category',
     			axisTick: {show: false},
-    			data: ['传感器A', '传感器B', '传感器C',]
+    			data: arr&&arr.map(function (item) {
+            return item[0];
+        })
     		}
     		],
     		yAxis: [
@@ -46,46 +49,57 @@ class ModleChart extends Component{
     			name: '90%相似度',
     			type: 'bar',
     			barGap: 0,
-    			data: [320, 332, 301,]
+    			data: arr&&arr.map(function (item) {
+            return item[2];
+        })
     		},
     		{
     			name: '70%相似度',
     			type: 'bar',
-    			data: [220, 182, 191,]
+    			data: arr&&arr.map(function (item) {
+            return item[3];
+        })
     		},
     		{
     			name: '50%相似度',
     			type: 'bar',
-    			data: [150, 232, 201,]
+    			data: arr&&arr.map(function (item) {
+            return item[4];
+        })
     		},
     		]
     	};
     	myChart.setOption(option);
 	}   
     getChartData(){
-        let orderid = this.props.match.params.orderid;
-        post({url:'',data:{orderid:orderid}}).then((data)=>{
-            this.createEchart(data);
+        let formValue = this.props.formValue;
+        post({url:'queryAnalysisAbnormalChart',data:formValue}).then((data)=>{
+          if(data&&data.status == '200'){
+              this.createEchart(data);
+          }else{
+            message.error('请求失败');
+          }
+            
         })
     }
     componentDidMount(){
-        this.createEchart(chartArr);
-        //this.getChartData();
+        //this.createEchart(chartArr);
+        this.getChartData();
     }
     handleSubmit = (e) => {
+      const formValue = this.props.formValue
     e.preventDefault(); 
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {  
         console.log('Received values of form: ', values);
-        /*post({url:config.BASEURL+'addSensorConf',data:values}).then((data)=>{
-          if(data.status !== '200'){
-            message.error('添加失败');
+        let submitObj = Object.assign({sensor_id:formValue.sensor_id,case_type:formValue.case_type,id:formValue.id}, values);
+        post({url:config.BASEURL+'queryAbnormalToSYSMonitor',data:submitObj}).then((data)=>{
+          if(data&&data.status !== '200'){
+            message.error('报存失败');
             return; 
           }
-            this.props.form.resetFields() ;
-            this.props.hideModal();
-            message.success('添加成功');
-        })*/
+            message.success('保存成功');
+        })
         this.props.hideModal();
       }
     });
@@ -101,6 +115,7 @@ class ModleChart extends Component{
   	}
     render(){
     	const { getFieldDecorator } = this.props.form;
+      let value = this.state.value
     	const formItemLayout = {
     		labelCol: {
     			xs: { span: 24 },
@@ -119,19 +134,20 @@ class ModleChart extends Component{
              		{...formItemLayout}
              		label='是否系统监控&nbsp;'
              		>
-             		{getFieldDecorator('sensor_name', {
+             		{getFieldDecorator('to_sys_monitor', {
              			rules: [{ required: true, message: '请选择是否系统监控!',}],
+                  initialValue:{value}
              		})(
-             		<RadioGroup onChange={this.onChange} value={this.state.value}>
-             			<Radio value={1}>是</Radio>
-             			<Radio value={2}>否</Radio>
+             		<RadioGroup onChange={this.onChange}>
+             			<Radio value={'yes'}>是</Radio>
+             			<Radio value={'no'}>否</Radio>
              		</RadioGroup>
              	)}
              	</Form.Item>
              		<Form.Item>
              			<Row>
              				<Col  push='5' span='12'>
-             					<Button  type="primary" htmlType="submit">添加</Button>
+             					<Button  type="primary" htmlType="submit">报存</Button>
              				</Col>
              				<Col push='5' span='12'>
              					<Button onClick={()=>this.onCancel()}>取消</Button>

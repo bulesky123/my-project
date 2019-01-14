@@ -20,6 +20,7 @@ class EventUnusal extends Component{
         super();
         this.state={
             addModalVisible:false,
+            formValue:{},
         }
         this.inputData = {
             start_time: null,      //开始时间
@@ -29,9 +30,8 @@ class EventUnusal extends Component{
     componentDidMount(){
         this.props.fetchUnusual(this.inputData)   
     }
-    handleButton(orderId){
-        this.setState({addModalVisible:true})
-        //this.props.history.push(`/app/event/echart/${orderId}`);
+    handleButton(item){
+        this.setState({addModalVisible:true,formValue:item})
     }
 
     handleRangePickerChange(moment, date) {
@@ -134,7 +134,7 @@ class EventUnusal extends Component{
                 realEndTime:item.realEndTime,
                 operator:item.operator,
                 operator:item.operator,
-                operation:<div><Button onClick={this.handleButton.bind(this,item.sensor_id)}>分析</Button><Button onClick={this.handleDelete.bind(this,item)}>删除</Button></div>
+                operation:<div><Button onClick={this.handleButton.bind(this,item)}>分析</Button><Button onClick={this.handleDelete.bind(this,item)}>删除</Button></div>
             }
         });
         //翻页器配置
@@ -175,7 +175,7 @@ class EventUnusal extends Component{
                 cancelText="取消"
                 footer={null}
                 >
-                    <WrappedAddModalForm hideModal={this.hideAddModal.bind(this)} />
+                    <WrappedAddModalForm formValue={this.state.formValue} hideModal={this.hideAddModal.bind(this)} />
                 </Modal>
 
             </div>

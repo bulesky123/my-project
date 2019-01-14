@@ -178,8 +178,8 @@ let option = {
 }
 
 function getSeries(param,markPoint){
-    if(!param || param==null ||  param=={}){return {}}
-    let params = param.data,alarm_level=param.alarm_level;
+    if(!param || param==null ||  param=={} || param.data.length==0){return {}}
+    let params = param.data,alarm_level=param.label;
     //设置x轴
     let xAxis = {
         gridIndex: 0,
@@ -200,7 +200,9 @@ function getSeries(param,markPoint){
             },
             /*markPoint : {
                 data : [
-                    {name:'某个坐标',coord: ['2014-09-01', 300]}
+                        {name:'某个坐标',coord: ['2014-09-01', 300]},
+                        {name:'某个坐标',coord: ['2014-09-01', 300]},
+                        {name:'某个坐标',coord: ['2014-09-01', 300]},
                     ]
             },*/
         }
@@ -212,15 +214,19 @@ function getSeries(param,markPoint){
             
         }
     }*/
+    let markPointData = getAlarmLevel(alarm_level)
+    console.log(markPointData)
     for(let i=0;i<params.length;i++){
-        lendArr.push(params[i][0][0]+"#"+params[i][0][1])
+        lendArr.push(params[i][0][0]+"#"+params[i][0][1]);
         series.push({
             data:params[i].map(function (item) {
             return item[2];
         }) ,
             name: params[i][0][0]+"#"+params[i][0][1],
             type: 'line',
+            markPoint : markPointData[i],
         })
+
     }
     
     let legend = {
@@ -236,11 +242,51 @@ function getSeries(param,markPoint){
 }
 
 
+function getAlarmLevel(arr){
+    if(!arr || arr.length==0){return []};
+    let levelArr = [];
+    for(let i=0;i<arr.length;i++){
+        levelArr.push({
+            name:arr[i].sensor_id,
+            data:getCoord(arr[i].data)
+        })
+        
+    }
 
+    return levelArr
+}
+
+function getCoord(arr){
+    if(arr.length==0){return []};
+    let levelArr = [];
+    for(let j=0;j<arr.length;j++){
+        levelArr.push({
+            coord:arr[j].coord,
+            itemStyle:{
+                color: {
+                    type: 'linear',
+                    x: 0,
+                    y: 0,
+                    x2: 0,
+                    y2: 1,
+                    colorStops: [{
+                                offset: 0, color: 'red' // 0% 处的颜色
+                            },  
+                            {
+                                offset: 1, color: arr[j].level // 100% 处的颜色
+                            }],
+                        globalCoord: false // 缺省为 false
+                    }
+                }
+            })
+    }
+    return levelArr
+}
 
 
 export {
     getSeries,
+    getAlarmLevel
 }
 
 

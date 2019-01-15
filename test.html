@@ -11,285 +11,373 @@
 </body>
 <script type="text/javascript">
 	
-var upColor = '#00da3c';
-var downColor = '#ec0000';
+    var upColor = '#00da3c';
+    var downColor = '#ec0000';
 
 
 
 
 
 
-/*
-var data = [["2004-01-02",10452.74,10409.85,10367.41,10554.96],["2004-01-05",10411.85,10544.07,10411.85,10575.92],["2004-01-06",10543.85,10538.66,10454.37,10584.07],["2004-01-07",10535.46,10529.03,10432,10587.55],["2004-01-08",10530.07,10592.44,10480.59,10651.99],["2004-01-09",10589.25,10458.89,10420.52,10603.48],["2004-01-12",10461.55,10485.18,10389.85,10543.03],["2004-01-13",10485.18,10427.18,10341.19,10539.25],["2004-01-14",10428.67,10538.37,10426.89,10573.85],["2004-01-15",10534.52,10553.85,10454.52,10639.03],["2004-01-16",10556.37,10600.51,10503.7,10666.88],["2004-01-20",10601.4,10528.66,10447.92,10676.96],["2004-01-21",10522.77,10623.62,10453.11,10665.7],["2004-01-22",10624.22,10623.18,10545.03,10717.4],["2004-01-23",10625.25,10568.29,10490.14,10691.77]];
-var myChart = echarts.init(document.getElementById('main'));
-myChart.setOption(option = {
-    backgroundColor: '#fff',
-    animation: false,
-    legend: {
-        bottom: 10,
-        left: 'center',
-        data: ['Dow-Jones index', 'MA5', 'MA10', 'MA20', 'MA30']
+
+    var data = [{
+        "x":111,
+        "y":12,
+        "id": "0",
+        "name": "显示的项目11",
+        "itemStyle": null,
+        "symbolSize": 4,
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": 4,
+        "label": {
+            "normal": {
+                "show": true
+            }
+        },
+        "category": 0
+    }, 
+    {
+        "x":1,
+        "y":12,
+        "id": "4",
+        "name": "显示的项目",
+        "itemStyle": null,
+        "symbolSize": 8,
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": 8,
+        "label": {
+            "normal": {
+                "show": true
+            }
+        },
+        "category": 0
     },
-    tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-            type: 'cross'
+    {
+        "x":21,
+        "y":12,
+        "id": "5",
+        "name": "显示的项目",
+        "itemStyle": null,
+        "symbolSize": 10,
+        "attributes": {
+            "modularity_class": 0
         },
-        backgroundColor: 'rgba(245, 245, 245, 0.8)',
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        textStyle: {
-            color: '#000'
-        },
-        position: function (pos, params, el, elRect, size) {
-            var obj = {top: 10};
-            obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
-            return obj;
-        }
-            // extraCssText: 'width: 170px'
-        },
-        axisPointer: {
-            link: {xAxisIndex: 'all'},
-            label: {
-                backgroundColor: '#777'
+        "value": 10,
+        "label": {
+            "normal": {
+                "show": true
             }
         },
-        toolbox: {
-            feature: {
-                dataZoom: {
-                    yAxisIndex: false
-                },
-                brush: {
-                    type: ['lineX', 'clear']
-                }
+        "category": 0
+    },
+    {
+        "x":14,
+        "y":122,
+        "id": "6",
+        "name": "显示的项目6",
+        "itemStyle": null,
+        "symbolSize": 12,
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": 12,
+        "label": {
+            "normal": {
+                "show": true
             }
         },
-        brush: {
-            xAxisIndex: 'all',
-            brushLink: 'all',
-            outOfBrush: {
-                colorAlpha: 0.1
+        "category": 0
+    },
+     {
+        "x":14,
+        "y":23,
+        "id": "7",
+        "name": "显示的项目",
+        "itemStyle": null,
+        "symbolSize": 14,
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": 14,
+        "label": {
+            "normal": {
+                "show": true
             }
         },
-        visualMap: {
-            show: false,
-            seriesIndex: 5,
-            dimension: 2,
-            pieces: [{
-                value: 1,
-                color: downColor
-            }, {
-                value: -1,
-                color: upColor
-            }]
+        "category": 0
+    },
+    {
+        "x":15,
+        "y":25,
+        "id": "1",
+        "name": "sfsdg",
+        "itemStyle": null,
+        "symbolSize": 22,
+        "attributes": {
+            "modularity_class": 0
         },
-        grid: [
-        {
-            left: '10%',
-            right: '8%',
-            height: '50%'
-        },
-
-        ],
-        xAxis: [
-        {
-            type: 'category',
-            data: data.map(function (item) {
-                return item[0];
-            }),
-            scale: true,
-            boundaryGap : false,
-            axisLine: {onZero: false},
-            splitLine: {show: false},
-            splitNumber: 200,
-
-            min: 'dataMin',
-            max: 'dataMax',
-            axisPointer: {
-                z: 100
+        "value": 22,
+        "label": {
+            "normal": {
+                "show": true
             }
         },
-
-        ],
-        yAxis: [
-        {
-            scale: true,
-            splitArea: {
-                show: true
+        "category": 1
+    }, 
+    {
+        "x":17,
+        "y":132,
+        "id": "8",
+        "name": "hsdfsd",
+        "itemStyle": null,
+        "symbolSize": 25,
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": 25,
+        "label": {
+            "normal": {
+                "show": true
             }
         },
-        {
-            scale: true,
-            gridIndex: 0,
-            splitNumber: 2,
-            axisLabel: {show: false},
-            axisLine: {show: false},
-            axisTick: {show: false},
-            splitLine: {show: false}
-        }
-        ],
-        series: [
-        {
-            name: 'MA5',
-            type: 'scatter',
-            data: data.map(function (item) {
-                return item[1];
-            }),
-            smooth: true,
-            lineStyle: {
-                normal: {opacity: 0.5}
+        "category": 1
+    },
+    {
+        "x":11,
+        "y":112,
+        "id": "9",
+        "name": "ertyui",
+        "itemStyle": null,
+        "symbolSize": 20,
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": 20,
+        "label": {
+            "normal": {
+                "show": true
             }
         },
-        {
-            name: 'MA10',
-            type: 'line',
-            data: data.map(function (item) {
-                return item[2];
-            }),
-            smooth: true,
-            lineStyle: {
-                normal: {opacity: 0.5}
+        "category": 1
+    },
+    {
+        "x":16,
+        "y":42,
+        "id": "10",
+        "name": "sdfgrerdc",
+        "itemStyle": null,
+        "symbolSize": 18,
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": 18,
+        "label": {
+            "normal": {
+                "show": true
             }
         },
-        {
-            name: 'MA20',
-            type: 'line',
-            data: data.map(function (item) {
-                return item[3];
-            }),
-            smooth: true,
-            lineStyle: {
-                normal: {opacity: 0.5}
+        "category": 1
+    },
+    {
+        "x":18,
+        "y":42,
+        "id": "15",
+        "name": "sdfg",
+        "itemStyle": null,
+        "symbolSize": 16.323809333333333,
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": 23.485714,
+        "label": {
+            "normal": {
+                "show": true
             }
         },
-        {
-            name: 'MA30',
-            type: 'line',
-            data: data.map(function (item) {
-                return item[4];
-            }),
-            smooth: true,
-            lineStyle: {
-                normal: {opacity: 0.5}
+        "category": 2
+    }, 
+    {
+        "x":19,
+        "y":34,
+        "id": "2",
+        "name": "dfghj",
+        "itemStyle": null,
+        "symbolSize": 16,
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": 16,
+        "label": {
+            "normal": {
+                "show": true
             }
         },
-        ]
-
-
-    });
-
-myChart.on('brushSelected', renderBrushed);
-function renderBrushed(params) {
-    var arr = data.map(function (item) {
-       return item[2];
-   });
-    var arr1 = data.map(function (item) {
-       return item[0];
-   });
-    console.log(params)
-    var selectId = params.batch[0].selected[1].dataIndex;
-    var selectArr = [];
-    for(var i=0;i<selectId.length;i++){
-    	selectArr.push([arr1[selectId[i]],arr[selectId[i]]])
-    }
-    console.log(selectArr)
-}*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- var arr1 = [
-      {
-        "data": [
-          {
-            "coord": [
-              "2019-01-14 22:21:03", 
-              10.0
-            ], 
-            "level": "red"
-          }, 
-          {
-            "coord": [
-              "2019-01-14 22:21:13", 
-              14.7725
-            ], 
-            "level": "yellow"
-          }, 
-          {
-            "coord": [
-              "2019-01-14 22:21:33", 
-              20.6223
-            ], 
-            "level": "red"
-          }
-        ], 
-        "name": "deddadada", 
-        "sensor_id": "s001_002_08"
-      }
-    ]
-
-function getAlarmLevel(arr){
-    if(arr.length==0){return []};
-    let levelArr = [];
-    for(let i=0;i<arr.length;i++){
-        levelArr.push({
-            name:arr[i].sensor_id,
-            data:getCoord(arr[i].data)
-        })
-        
-    }
-    
-    return levelArr
-}
-
-function getCoord(arr){
-    if(arr.length==0){return []};
-    let levelArr = [];
-    for(let j=0;j<arr.length;j++){
-        levelArr.push({
-            coord:arr[j].coord,
-            itemStyle:{
-                color: {
-                    type: 'linear',
-                    x: 0,
-                    y: 0,
-                    x2: 0,
-                    y2: 1,
-                    colorStops: [{
-                                offset: 0, color: 'red' // 0% 处的颜色
-                            },  
-                            {
-                                offset: 1, color: arr[j].level // 100% 处的颜色
-                            }],
-                        globalCoord: false // 缺省为 false
-                    }
-                }
+        "category": 2
+    },
+    {
+        "x":16,
+        "y":145,
+        "id": "12",
+        "name": "erfgbn",
+        "itemStyle": null,
+        "symbolSize": 18,
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": 18,
+        "label": {
+            "normal": {
+                "show": true
+            }
+        },
+        "category": 2
+    },
+    {
+        "x":34,
+        "y":123,
+        "id": "13",
+        "name": "hello",
+        "itemStyle": null,
+        "symbolSize": 30,
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": 30,
+        "label": {
+            "normal": {
+                "show": true
+            }
+        },
+        "category":2
+    },
+    {
+        "x":35,
+        "y":19,
+        "id": "14",
+        "name": "hello 14",
+        "itemStyle": null,
+        "symbolSize": 37,
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": 37,
+        "label": {
+            "normal": {
+                "show": true
+            }
+        },
+        "category":2
+    },
+    {
+        "x":17,
+        "y":16,
+        "id": "11",
+        "name": "hello",
+        "itemStyle": null,
+        "symbolSize": 36,
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": 36,
+        "label": {
+            "normal": {
+                "show": true
+            }
+        },
+        "category":2
+    }];
+    var myChart = echarts.init(document.getElementById('main'));
+    let categories = [{name:'类目1'},{name:'类目2'},{name:'类目3'}];
+    let option = {
+         title: {
+            text: 'Les Miserables',
+            subtext: 'Circular layout',
+            top: 'bottom',
+            left: 'right'
+        },
+        tooltip: {},
+        legend: [{
+            // selectedMode: 'single',
+            data: categories.map(function (a) {
+                return a.name;
             })
-    }
-    return levelArr
-}
+        }],
+        animationDuration: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series : [
+        {
+            name: '鼠标滑过显示的标题',
+            type: 'graph',
+            layout: 'circular',
+            circular: {
+                rotateLabel: true
+            },
+            data: data,
+            links: [
+            {
+                source: '14',
+                target: '0'
+            }, {
+                source: '14',
+                target: '15'
+            },{
+                source: '14',
+                target: '12'
+            }, {
+                source: '6',
+                target: '0'
+            }, {
+                source: '6',
+                target: '12'
+            },{
+                source: '6',
+                target: '15'
+            }, {
+                source: '6',
+                target: '11'
+            }
+            , {
+                source: '6',
+                target: '1'
+            },{
+                source: '14',
+                target: '15'
+            }, {
+                source: '11',
+                target: '0'
+            }
+            , {
+                source: '14',
+                target: '1'
+            },{
+                source: '14',
+                target: '12'
+            }
+            ],
+            categories: categories,
+            focusNodeAdjacency: true,
+            roam: true,
+            label: {
+                normal: {
+                    position: 'right',
+                    formatter: '{b}'
+                }
+            },
+            lineStyle: {
+                normal: {
+                    color: 'source',
+                    curveness: 0.3
+                }
+            }
+        }
+        ]
+    };
+    myChart.setOption(option);
 
-console.log(getAlarmLevel(arr1))
+
 </script>
 </html>

@@ -45,8 +45,9 @@ let option = {
     }, {
         type: 'inside'
     }],
-    visualMap: {
+    visualMap: [{
         top: 10,
+        seriesIndex:1,
         right: 10,
         pieces: [{
             gt: 0,
@@ -76,6 +77,38 @@ let option = {
             color: '#999'
         }
     },
+    /*{
+        top: 10,
+        right: 10,
+        seriesIndex:2,
+        pieces: [{
+            gt: 0,
+            lte: 20,
+            color: '#f00'
+        }, {
+            gt: 20,
+            lte: 40,
+            color: '#0f0'
+        }, {
+            gt: 40,
+            lte: 60,
+            color: '#ff9933'
+        }, {
+            gt: 60,
+            lte: 80,
+            color: '#cc0033'
+        }, {
+            gt: 80,
+            lte: 100,
+            color: '#660099'
+        }, {
+            gt: 100,
+            color: '#7e0023'
+        }],
+        outOfRange: {
+            color: '#999'
+        }
+    }*/],
     /*series: [
     {
         data:chartData.map(function (item) {
@@ -179,7 +212,7 @@ let option = {
 
 function getSeries(param,markPoint){
     if(!param || param==null ||  param=={} || param.data.length==0){return {}}
-    let params = param.data,alarm_level=param.label;
+    let params = param.data,alarm_level=param.label,alarm=param.alarm;
     //设置x轴
     let xAxis = {
         gridIndex: 0,
@@ -195,29 +228,19 @@ function getSeries(param,markPoint){
             }) ,
             name: params[0]&&(params[0][0][0]+"#"+params[0][0][1]),
             type: 'scatter',
-            markPoint : {
-                data : markPoint || []
-            },
-            /*markPoint : {
-                data : [
-                        {name:'某个坐标',coord: ['2014-09-01', 300]},
-                        {name:'某个坐标',coord: ['2014-09-01', 300]},
-                        {name:'某个坐标',coord: ['2014-09-01', 300]},
-                    ]
-            },*/
         }
     ];
     let lendArr = [params[0][0][0]+"#"+params[0][0][1]]
-   /* let markPointData = [],markPoint=[];
-    for(let i=0;i<alarm_level.length;i++){
-        for(let j=0;j<alarm_level[i].length;j++){
-            
-        }
-    }*/
     let markPointData = getAlarmLevel(alarm_level)
-    console.log(markPointData)
+    let visualMap = [];
     for(let i=0;i<params.length;i++){
         lendArr.push(params[i][0][0]+"#"+params[i][0][1]);
+        visualMap.push({
+            top: 10,
+            seriesIndex:1,
+            right: 10,
+            pieces:alarm[params[i][0][0]]
+        });
         series.push({
             data:params[i].map(function (item) {
             return item[2];
@@ -237,6 +260,7 @@ function getSeries(param,markPoint){
         {
             legend:legend,
             xAxis:xAxis,
+            visualMap:visualMap,
             series:series
         },option)
 }

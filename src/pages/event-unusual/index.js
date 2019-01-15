@@ -48,17 +48,6 @@ class EventUnusal extends Component{
     //删除数据
     handleDelete(item){
         let _this = this;
-        /*const param = {
-            id:item.id,
-            sensor_id:item.sensor_id,
-            sensor_name:item.sensor_name,
-            sensor_type:item.sensor_type
-        }
-        const formParam = {
-            sensor_type:this.state.sensor_type,
-            sensor_id:this.state.sensor_id,
-            sensor_name:this.state.sensor_name,
-        }*/
         confirm({
             title: '您想好了，确定删除它?',
             // content: '删除此条配置',
@@ -66,14 +55,14 @@ class EventUnusal extends Component{
             okType: 'danger',
             cancelText: '再想想',
             onOk() {
-             /* post({url:config.BASEURL+'removeSensorConf',data:param}).then((data)=>{
+              post({url:config.BASEURL+'deleteAbnormalCase',data:param}).then((data)=>{
                 if(data.status !== '200'){
                     message.error('删除失败');
                     return; 
                 }
-                _this.props.fetchEventUnusual(formParam)
+                _this.props.fetchUnusual(_this.inputData)
                 message.success('删除成功');
-            })*/
+            })
           },
           onCancel() {
               console.log('Cancel');
@@ -81,22 +70,7 @@ class EventUnusal extends Component{
       });   
     }
     render(){
-       const {UnusalData=[{
-                key: 1,
-                id: 1,
-                event_name: '2wss',
-                sensor_id: '23wed',
-                sensor_name:'2345',
-                dev_name: 'item.dev_name',
-                function_id: '2345rf',
-                trend_flg: 'up',
-                mean_value: 1,
-                mse_value: 2,
-                start_time:'2019-1-1',
-                end_time: '2019-1-1',
-                create_time:'2019-1-1',
-                realEndTime:'2019-1-1',
-                operator:'zf'}],totalCount=0,a=20,b=30} = this.props.FetchUnusualList;
+       const { UnusalData=[],totalCount=0,a=20,b=30} = this.props.FetchUnusualList;
         const columns = [
             {title: '异常事件id', dataIndex: 'id', key: 'id',fixed: 'left', width: 80 },
             {title: '异常事件名称', dataIndex: 'event_name', key: 'event_name', width: 70},

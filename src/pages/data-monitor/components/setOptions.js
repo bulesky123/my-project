@@ -45,22 +45,22 @@ let option = {
     }, {
         type: 'inside'
     }],
-    visualMap: [{
+    /*visualMap: [{
         top: 10,
         seriesIndex:1,
         right: 10,
         pieces: [{
-            gt: 0,
-            lte: 20,
-            color: '#096'
+            gt: 12.67,
+            lte: 23.53,
+            color: 'red'
         }, {
-            gt: 20,
-            lte: 40,
-            color: '#ffde33'
+            gt: 14.48,
+            lte: 21.72,
+            color: 'orange'
         }, {
-            gt: 40,
-            lte: 60,
-            color: '#ff9933'
+            gt: 16.29,
+            lte: 19.91,
+            color: 'yellow'
         }, {
             gt: 60,
             lte: 80,
@@ -77,7 +77,7 @@ let option = {
             color: '#999'
         }
     },
-    /*{
+    {
         top: 10,
         right: 10,
         seriesIndex:2,
@@ -108,7 +108,7 @@ let option = {
         outOfRange: {
             color: '#999'
         }
-    }*/],
+    }],*/
     /*series: [
     {
         data:chartData.map(function (item) {
@@ -236,10 +236,13 @@ function getSeries(param,markPoint){
     for(let i=0;i<params.length;i++){
         lendArr.push(params[i][0][0]+"#"+params[i][0][1]);
         visualMap.push({
-            top: 10,
-            seriesIndex:1,
+            top: 10+(20*i),
+            seriesIndex:i+1,
             right: 10,
-            pieces:alarm[params[i][0][0]]
+            pieces:alarm[params[i][0][0]],
+            outOfRange: {
+                color: '#999'
+            }
         });
         series.push({
             data:params[i].map(function (item) {
@@ -256,7 +259,7 @@ function getSeries(param,markPoint){
         data: lendArr,
         top: 40
     };
-    return Object.assign(
+        return Object.assign(
         {
             legend:legend,
             xAxis:xAxis,

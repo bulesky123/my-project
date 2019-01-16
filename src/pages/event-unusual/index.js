@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Modal,Table ,Button,Input, Form, Row, Col,DatePicker,Menu} from 'antd';
+import { Modal,Table ,Button,Input, Form, Row, message, Col,DatePicker,Menu} from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
 import WrappedAddModalForm from './components/modle-chart';
 import {post,get} from '../../axios/tools';
@@ -55,7 +55,7 @@ class EventUnusal extends Component{
             okType: 'danger',
             cancelText: '再想想',
             onOk() {
-              post({url:config.BASEURL+'deleteAbnormalCase',data:param}).then((data)=>{
+              post({url:config.BASEURL+'deleteAbnormalCase',data:item}).then((data)=>{
                 if(data.status !== '200'){
                     message.error('删除失败');
                     return; 

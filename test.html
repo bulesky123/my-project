@@ -19,28 +19,41 @@
 
 
 
+    let categories = [{name:'温度'},{name:'压力'},{name:'合力'},{name:'气压'},{name:'电力'}];
 
-    var data = [{
-        "x":111,
-        "y":12,
-        "id": "0",
-        "name": "显示的项目11",
+    var data = [/*{
+        "id": "传感器id",
+        "name": "各传感器名称",
         "itemStyle": null,
-        "symbolSize": 4,
+        "symbolSize": '传感器异常次数',
         "attributes": {
             "modularity_class": 0
         },
-        "value": 4,
+        "value": '传感器异常次数',
+        "label": {
+            "normal": {
+                "show": true
+            }
+        },
+        "category": '同一类目的'
+    },*/ 
+    {
+        "id": "0",
+        "name": "各传感器",
+        "itemStyle": null,
+        "symbolSize": 40,
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": 10,
         "label": {
             "normal": {
                 "show": true
             }
         },
         "category": 0
-    }, 
+    },
     {
-        "x":1,
-        "y":12,
         "id": "4",
         "name": "显示的项目",
         "itemStyle": null,
@@ -57,8 +70,6 @@
         "category": 0
     },
     {
-        "x":21,
-        "y":12,
         "id": "5",
         "name": "显示的项目",
         "itemStyle": null,
@@ -75,9 +86,7 @@
         "category": 0
     },
     {
-        "x":14,
-        "y":122,
-        "id": "6",
+        "id": "a",
         "name": "显示的项目6",
         "itemStyle": null,
         "symbolSize": 12,
@@ -93,8 +102,6 @@
         "category": 0
     },
      {
-        "x":14,
-        "y":23,
         "id": "7",
         "name": "显示的项目",
         "itemStyle": null,
@@ -111,8 +118,6 @@
         "category": 0
     },
     {
-        "x":15,
-        "y":25,
         "id": "1",
         "name": "sfsdg",
         "itemStyle": null,
@@ -129,8 +134,6 @@
         "category": 1
     }, 
     {
-        "x":17,
-        "y":132,
         "id": "8",
         "name": "hsdfsd",
         "itemStyle": null,
@@ -147,8 +150,6 @@
         "category": 1
     },
     {
-        "x":11,
-        "y":112,
         "id": "9",
         "name": "ertyui",
         "itemStyle": null,
@@ -165,8 +166,6 @@
         "category": 1
     },
     {
-        "x":16,
-        "y":42,
         "id": "10",
         "name": "sdfgrerdc",
         "itemStyle": null,
@@ -183,8 +182,6 @@
         "category": 1
     },
     {
-        "x":18,
-        "y":42,
         "id": "15",
         "name": "sdfg",
         "itemStyle": null,
@@ -201,8 +198,6 @@
         "category": 2
     }, 
     {
-        "x":19,
-        "y":34,
         "id": "2",
         "name": "dfghj",
         "itemStyle": null,
@@ -219,8 +214,6 @@
         "category": 2
     },
     {
-        "x":16,
-        "y":145,
         "id": "12",
         "name": "erfgbn",
         "itemStyle": null,
@@ -237,8 +230,6 @@
         "category": 2
     },
     {
-        "x":34,
-        "y":123,
         "id": "13",
         "name": "hello",
         "itemStyle": null,
@@ -255,8 +246,6 @@
         "category":2
     },
     {
-        "x":35,
-        "y":19,
         "id": "14",
         "name": "hello 14",
         "itemStyle": null,
@@ -273,8 +262,6 @@
         "category":2
     },
     {
-        "x":17,
-        "y":16,
         "id": "11",
         "name": "hello",
         "itemStyle": null,
@@ -291,7 +278,7 @@
         "category":2
     }];
     var myChart = echarts.init(document.getElementById('main'));
-    let categories = [{name:'类目1'},{name:'类目2'},{name:'类目3'}];
+    //let categories = [{name:'类目1'},{name:'类目2'},{name:'类目3'}];
     let option = {
          title: {
             text: 'Les Miserables',
@@ -320,6 +307,10 @@
             links: [
             {
                 source: '14',
+                lineStyle:{
+                    color:'red',
+                    width:10
+                },
                 target: '0'
             }, {
                 source: '14',
@@ -328,20 +319,20 @@
                 source: '14',
                 target: '12'
             }, {
-                source: '6',
+                source: 'a',
                 target: '0'
             }, {
-                source: '6',
+                source: 'a',
                 target: '12'
             },{
-                source: '6',
+                source: 'a',
                 target: '15'
             }, {
-                source: '6',
+                source: 'a',
                 target: '11'
             }
             , {
-                source: '6',
+                source: 'a',
                 target: '1'
             },{
                 source: '14',
@@ -378,6 +369,118 @@
     };
     myChart.setOption(option);
 
+
+
+
+
+// 线条
+/*
+line: [
+    {
+        source: '相关联的传感器id',
+        lineStyle:{
+            color:'red',
+            width:10
+        },
+        target: '相关联的传感器id'
+    }
+]
+*/
+
+/*
+point: [{
+        "id": "传感器id",
+        "name": "各传感器名称",
+        "symbolSize": '传感器异常次数',
+        "attributes": {
+            "modularity_class": 0
+        },
+        "value": '传感器异常次数',
+        "label": {
+            "normal": {
+                "show": true
+            }
+        },
+        "category": '同一类目的id'
+    }, 
+]
+
+*/
+/*{
+    point:[
+        {
+            'sensor_id':'sfai',
+            'sensor_name':'sdfg',
+            'sensor_type':'sdf',
+            'abnormal_num':12
+        },
+        {
+            'sensor_id':'sfai',
+            'sensor_name':'sdfg',
+            'sensor_type':'sdf',
+            'abnormal_num':12
+        },
+    ],
+    line:[
+        {
+            'sensor_name_from':'sdf',
+            'sensor_name_to':'sdf',
+            'relation_label':10,
+            'relation_type':'ddd'
+        },
+        {
+            'sensor_name_from':'sdf',
+            'sensor_name_to':'sdf',
+            'relation_label':10,
+            'relation_type':'ddd'
+        },
+    ]
+}*/
+
+
+function getPointData(point){
+    if(!point || point.length===0){return []}
+    let seriesData = [];
+    let categoryArr = [];
+    for(let i=0;i<point.length;i++){
+        if(!categoryArr.includes(point[i].sensor_type_name)){
+            categoryArr.push(point[i].sensor_type_name)
+        }
+        seriesData.push({
+            "id": point[i].sensor_id,
+            "name": point[i].sensor_name,
+            "symbolSize": point[i].abnormal_num,
+            "attributes": {
+                "modularity_class": 0
+            },
+            "value": point[i].abnormal_num,
+            "label": {
+                "normal": {
+                    "show": true
+                }
+            },
+            "category": point[i].sensor_type   
+        })
+    }
+    return {
+        seriesData,
+        categoryArr
+    }
+}
+
+function getLine(line){
+    if(!line || line.length===0){return []}
+    let lineData = [];
+    for(let i=0;i<line.length;i++){
+        lineData.push({
+            source: line[i].sensor_name_from,
+            lineStyle:{
+                width:line[i].relation_label,
+            },
+            target: line[i].sensor_name_to
+        })
+    }
+}
 
 </script>
 </html>

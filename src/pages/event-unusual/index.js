@@ -142,6 +142,7 @@ class EventUnusal extends Component{
 
                 <Modal
                 title="异常事件分析"
+                width='600px'
                 visible={this.state.addModalVisible}
                 onOk={this.hideAddModal.bind(this)}
                 onCancel={this.hideAddModal.bind(this)}

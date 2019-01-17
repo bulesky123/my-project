@@ -238,7 +238,7 @@ function getSeries(param,markPoint){
         visualMap.push({
             top: 10+(20*i),
             seriesIndex:i+1,
-            right: 10,
+            right: 10+(80*i),
             pieces:alarm[params[i][0][0]],
             outOfRange: {
                 color: '#999'

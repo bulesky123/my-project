@@ -36,7 +36,7 @@ class ModleChart extends Component{
     			axisTick: {show: false},
     			data: arr&&arr.map(function (item) {
             return item[0];
-        })
+          })
     		}
     		],
     		yAxis: [
@@ -73,9 +73,9 @@ class ModleChart extends Component{
 	}   
     getChartData(){
         let formValue = this.props.formValue;
-        post({url:'queryAnalysisAbnormalChart',data:formValue}).then((data)=>{
+        post({url:config.BASEURL+'queryAnalysisAbnormalChart',data:formValue}).then((data)=>{
           if(data&&data.status == '200'){
-              this.createEchart(data);
+              this.createEchart(data.resultList);
           }else{
             message.error('请求失败');
           }
@@ -87,7 +87,7 @@ class ModleChart extends Component{
         this.getChartData();
     }
     handleSubmit = (e) => {
-      const formValue = this.props.formValue
+    const formValue = this.props.formValue
     e.preventDefault(); 
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {  
@@ -128,19 +128,19 @@ class ModleChart extends Component{
     	};
         return(
             <div>
-            	<div id="myChart" style={{ width: 500, height: 500}}></div>
+            	<div id="myChart" style={{ width: 600, height: 500}}></div>
              	<Form onSubmit={this.handleSubmit}>
              	<Form.Item
              		{...formItemLayout}
              		label='是否系统监控&nbsp;'
              		>
              		{getFieldDecorator('to_sys_monitor', {
-             			rules: [{ required: true, message: '请选择是否系统监控!',}],
-                  initialValue:{value}
+             			rules: [{ required: true, message: '请选择是否系统监控!'}],
+                  initialValue:value 
              		})(
              		<RadioGroup onChange={this.onChange}>
-             			<Radio value={'yes'}>是</Radio>
-             			<Radio value={'no'}>否</Radio>
+             			<Radio value='yes'>是</Radio>
+             			<Radio value='no'>否</Radio>
              		</RadioGroup>
              	)}
              	</Form.Item>

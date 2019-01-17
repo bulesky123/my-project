@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Radio,Button, Row, Col,message,Form} from 'antd';
 import {post} from '../../../axios/tools';
+import { getOption } from './getOption';
+import config from '../../../axios/config'
 import echarts from 'echarts';
 
 import chartArr from '../../../api/chartArr';
@@ -17,64 +19,27 @@ class ModleChart extends Component{
     }
     createEchart(arr){
     	let myChart = echarts.init(document.getElementById('myChart'));
-    	let categories = [{name:'类目1'},{name:'类目2'},{name:'类目3'},{name:'类目4'},{name:'类目5'}];
-      let option = {
-        tooltip: {},
-        legend: [{
-            // selectedMode: 'single',
-            data: categories.map(function (a) {
-                return a.name;
-            })
-        }],
-        animationDuration: 1500,
-        animationEasingUpdate: 'quinticInOut',
-        series : [
-            {
-                name: '鼠标滑过显示的标题',
-                type: 'graph',
-                layout: 'circular',
-                circular: {
-                    rotateLabel: true
-                },
-                data: arr,
-                links: 'baidu.com',
-                categories: categories,
-                roam: true,
-                label: {
-                    normal: {
-                        position: 'right',
-                        formatter: '{b}'
-                    }
-                },
-                lineStyle: {
-                    normal: {
-                        color: 'source',
-                        curveness: 0.3
-                    }
-                }
-            }
-        ]
-    };
+    	let option = getOption(arr);
     	myChart.setOption(option);
 	}   
-    getChartData(){
-        let orderid = this.props.match.params.orderid;
-        post({url:'',data:{orderid:orderid}}).then((data)=>{
+    getChartData(relation_type){
+        post({url:config.BASEURL +'queryAbnormalGraph',data:{relation_type:relation_type}}).then((data)=>{
             this.createEchart(data);
         })
     }
     componentDidMount(){
-        this.createEchart(chartArr);
-        //this.getChartData();
+        //this.createEchart(chartArr);
+        this.getChartData('');
     }
     onCancel(){
     	this.props.hideModal()
   	}
   	onChange = (e) => {
   		console.log('radio checked', e.target.value);
-  		this.setState({
+  		/*this.setState({
   			value: e.target.value,
-  		});
+  		});*/
+       this.getChartData(e.target.value);
   	}
     render(){
     	const { getFieldDecorator } = this.props.form;

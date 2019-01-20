@@ -3,8 +3,8 @@ function getPointData(point){
     let seriesData = [];
     let categoryArr = [];
     for(let i=0;i<point.length;i++){
-        if(!categoryArr.includes(point[i].sensor_type_name)){
-            categoryArr.push(point[i].sensor_type_name)
+        if(!categoryArr.includes(point[i].sensor_type)){
+            categoryArr.push(point[i].sensor_type)
         }
         seriesData.push({
             "id": point[i].sensor_id,
@@ -19,7 +19,7 @@ function getPointData(point){
                     "show": true
                 }
             },
-            "category": point[i].sensor_type   
+            "category": point[i].sensor_type_idx   
         })
     }
     return {
@@ -33,13 +33,14 @@ function getLine(line){
     let lineData = [];
     for(let i=0;i<line.length;i++){
         lineData.push({
-            source: line[i].sensor_name_from,
+            source: line[i].sensor_id_from,
             lineStyle:{
-                width:line[i].relation_label,
+                width:line[i].relation_num,
             },
-            target: line[i].sensor_name_to
+            target: line[i].sensor_id_to
         })
     }
+    return lineData
 }
 
 
@@ -54,12 +55,6 @@ function getOption(obj){
         categories.push({'name':legendData[i]})
     }
     let option = {
-       title: {
-        text: '监控图谱',
-        subtext: 'Circular layout',
-        top: 'bottom',
-        left: 'right'
-    },
     legend: [{
             // selectedMode: 'single',
             data: legendData
@@ -78,7 +73,7 @@ function getOption(obj){
             links: linksPoint,
             categories: categories,
             focusNodeAdjacency: true,
-            roam: true,
+            // roam: true,
             label: {
                 normal: {
                     position: 'right',

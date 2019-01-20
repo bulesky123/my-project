@@ -236,6 +236,7 @@ function getSeries(param,markPoint){
     for(let i=0;i<params.length;i++){
         lendArr.push(params[i][0][0]+"#"+params[i][0][1]);
         visualMap.push({
+            show:false,
             top: 10+(20*i),
             seriesIndex:i+1,
             right: 10+(80*i),

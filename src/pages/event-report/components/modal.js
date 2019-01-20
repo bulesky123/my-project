@@ -24,7 +24,7 @@ class ModleChart extends Component{
 	}   
     getChartData(relation_type){
         post({url:config.BASEURL +'queryAbnormalGraph',data:{relation_type:relation_type}}).then((data)=>{
-            this.createEchart(data);
+            this.createEchart(data.resultList);
         })
     }
     componentDidMount(){

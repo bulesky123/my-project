@@ -20,6 +20,9 @@ class EventUnusal extends Component{
         super();
         this.state={
             addModalVisible:false,
+            case_type:'',
+            manu:0,//圈选异常
+            system:0,//系统异常
             formValue:{},
         }
         this.inputData = {
@@ -28,22 +31,39 @@ class EventUnusal extends Component{
         };
     }
     componentDidMount(){
-        this.props.fetchUnusual(this.inputData)   
+        this.props.fetchUnusual(this.inputData) 
+        this.getQueryAbnormalCaseNum()  
     }
     handleButton(item){
         this.setState({addModalVisible:true,formValue:item})
     }
-
+    getQueryAbnormalCaseNum(){
+        post({url:config.BASEURL+'queryAbnormalCaseNum',data:{}}).then((res)=>{
+           if(res&&res.status === '200'){
+                this.setState({
+                    manu:res.result.manu,//圈选异常
+                    system:res.result.system,//系统异常
+                })
+            }
+        })
+    }
     handleRangePickerChange(moment, date) {
         this.inputData.start_time = date[0];
         this.inputData.end_time = date[1];
     }
     handleButtonClick(){
-        this.props.fetchUnusual(this.inputData)  
+        let param = this.inputData;
+        param.case_type = this.state.case_type
+        this.props.fetchUnusual(param)  
     }
     //关闭添加弹窗Modal
     hideAddModal(){
         this.setState({addModalVisible:false})
+    }
+    queryTable(type){
+        let param = this.inputData;  
+        param.case_type = type
+        this.props.fetchUnusual(param)
     }
     //删除数据
     handleDelete(item){
@@ -70,7 +90,8 @@ class EventUnusal extends Component{
       });   
     }
     render(){
-       const { UnusalData=[],totalCount=0,a=20,b=30} = this.props.FetchUnusualList;
+       const { UnusalData=[],totalCount=0} = this.props.FetchUnusualList;
+       const { manu ,system } = this.state
         const columns = [
             {title: '异常事件id', dataIndex: 'id', key: 'id',fixed: 'left', width: 80 },
             {title: '异常事件名称', dataIndex: 'event_name', key: 'event_name', width: 70},
@@ -125,8 +146,8 @@ class EventUnusal extends Component{
             <div className="EventUnusal">
                 <BreadcrumbCustom first="事件诊断" second="异常事件"/>
                 <div className='btnGroup'>
-                    <Button type="primary" style={{marginRight:20}}>圈选异常事件({a})</Button>
-                    <Button type="primary">系统异常事件({b})</Button>
+                    <Button type="primary" onClick={this.queryTable.bind(this,'manu')} style={{marginRight:20}}>圈选异常事件({manu})</Button>
+                    <Button type="primary" onClick={this.queryTable.bind(this,'system')} >系统异常事件({system})</Button>
                 </div>
                 <Form style={{marginBottom:20}}>
                     <Row>

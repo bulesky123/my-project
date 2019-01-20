@@ -29,7 +29,12 @@ class ModleChart extends Component{
     		legend: {
     			data: ['90%相似度', '70%相似度', '50%相似度']
     		},
-    		calculable: true,
+        dataZoom: [{
+          startValue: '1',
+        }, {
+        type: 'inside'
+      }],
+      calculable: true,
     		xAxis: [
     		{
     			type: 'category',
@@ -147,7 +152,7 @@ class ModleChart extends Component{
              		<Form.Item>
              			<Row>
              				<Col  push='5' span='12'>
-             					<Button  type="primary" htmlType="submit">报存</Button>
+             					<Button  type="primary" htmlType="submit">保存</Button>
              				</Col>
              				<Col push='5' span='12'>
              					<Button onClick={()=>this.onCancel()}>取消</Button>

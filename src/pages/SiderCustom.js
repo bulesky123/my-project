@@ -3,6 +3,7 @@ import { Layout } from 'antd';
 import { withRouter } from 'react-router-dom';
 // import { menus_old } from '../constants/menus';
 import SiderMenu from './SiderMenu';
+import logo from './logo.jpg';
 
 const { Sider } = Layout;
 
@@ -58,7 +59,7 @@ class SiderCustom extends Component {
                 collapsed={this.props.collapsed}
                 style={{ overflowY: 'auto' }}
             >
-                <div className="logo" />
+                <div className="logo"><img style={{width: '168px',height: '32px',borderRadius: '8px'}} src={logo} /></div>
                 <SiderMenu
                     menus={menus}
                     onClick={this.menuClick}

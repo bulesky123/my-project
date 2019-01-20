@@ -107,7 +107,7 @@ class AddModalForm extends React.Component {
           {...formItemLayout}
           label='异常事件名称&nbsp;'
         >
-          {getFieldDecorator('sensor_type', {
+          {getFieldDecorator('event_name', {
             rules: [{ required: true, message: '请输入异常事件名称!' }],
           })(
             <Input/>

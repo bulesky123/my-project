@@ -178,9 +178,10 @@ class DataMonitor extends Component{
             "start_time":start_time,
             "end_time":end_time
         },(res)=>{
-            if(res.length==0){return}
+            clearInterval(this.interval)
+            if(res==null || res=={} || res.length==0){return}
             let series=getSeries(res)
-            this.myChart.setOption(series,true);
+            this.myChart.setOption(series,true); 
         })
 
     }

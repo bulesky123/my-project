@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { bindActionCreators } from 'redux';
 import {post} from '../../../axios/tools'
 import config from '../../../axios/config'
@@ -40,7 +41,7 @@ class RegistrationForm extends React.Component {
           }
             this.props.form.resetFields() ;
             this.props.hideModal();
-            this.props.fetchImitateUnusual({"event_name":'s001_002_08'});
+            this.props.fetchImitateUnusual({});
             message.success('修改成功');
         })
         
@@ -128,7 +129,7 @@ class RegistrationForm extends React.Component {
         >
             {getFieldDecorator('start_time_obj', {
               rules: [{ required: true, message: '请选择开始时间!' }],
-              initialValue:formValue.start_time
+              initialValue:formValue&&moment(formValue.start_time)
             })(
             <DatePicker
             showTime
@@ -146,7 +147,7 @@ class RegistrationForm extends React.Component {
         >
             {getFieldDecorator('end_time_obj', {
               rules: [{ required: true, message: '请选择结束时间!' }],
-              initialValue:formValue.end_time
+              initialValue:formValue&&moment(formValue.end_time)
             })(
             <DatePicker
             showTime
@@ -162,9 +163,9 @@ class RegistrationForm extends React.Component {
           {...formItemLayout}
           label='均值&nbsp;'
         >
-          {getFieldDecorator('mean_val', {
+          {getFieldDecorator('mean_value', {
             rules: [{ required: true, message: '请输入均值!', whitespace: true }],
-            initialValue:formValue.mean_val+''
+            initialValue:formValue.mean_value+''
           })(
             <Input readOnly={isEditModal?"":"readOnly"}/>
           )}
@@ -173,9 +174,9 @@ class RegistrationForm extends React.Component {
           {...formItemLayout}
           label='方差&nbsp;'
         >
-          {getFieldDecorator('mse_val', {
+          {getFieldDecorator('mse_value', {
             rules: [{ required: true, message: '请输入方差!', whitespace: true }],
-            initialValue:formValue.mse_val+""
+            initialValue:formValue.mse_value+""
           })(
             <Input readOnly={isEditModal?"":"readOnly"}/>
           )}

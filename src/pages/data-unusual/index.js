@@ -22,7 +22,7 @@ class DataUnusual extends Component{
             addModalVisible:false,
             editModalVisible:false,
             isEditModal:true,//默认是修改弹窗
-            event_name:'温度',
+            event_name:'',
             sensor_name:'',
             dev_name:'',
             formValue:{}
@@ -38,6 +38,7 @@ class DataUnusual extends Component{
     }
         //查看详情和修改
     handleButton(item,isEdit){
+        console.log(item)
         this.setState({editModalVisible:true,isEditModal:isEdit?true:false,formValue:item})
     }
     //删除数据
@@ -128,7 +129,8 @@ class DataUnusual extends Component{
                 operator: item.operator,
                 create_time:item.create_time,
                 update_time:item.update_time,
-                operation:<div><Button onClick={this.handleButton.bind(this,item,'')}>详情</Button><Button onClick={this.handleButton.bind(this,item,'isEdit')}>修改</Button><Button onClick={this.handleDelete.bind(this,item)}>删除</Button></div>
+                operation:<div>
+                <Button onClick={this.handleButton.bind(this,item,'')}>详情</Button><Button onClick={this.handleButton.bind(this,item,'isEdit')}>修改</Button><Button onClick={this.handleDelete.bind(this,item)}>删除</Button></div>
             }
         });
         //翻页器配置
@@ -178,17 +180,17 @@ class DataUnusual extends Component{
                 <Row > 
                     <Col md={6} sm={24} >
                         <FormItem label="事件名称">
-                           <Input onChange={ (e)=>{this.setState({event_name:e.target.value})} } placeholder="请输入传感器ID" />
+                           <Input onChange={ (e)=>{this.setState({event_name:e.target.value})} } placeholder="事件名称" />
                         </FormItem>
                     </Col>
                     <Col md={6} sm={24}>
                         <FormItem key="name" label="传感器名称">
-                           <Input onChange={ (e)=>{this.setState({sensor_name:e.target.value})} } placeholder="请输入传感器ID" />
+                           <Input onChange={ (e)=>{this.setState({sensor_name:e.target.value})} } placeholder="传感器名称" />
                         </FormItem>
                     </Col>
                     <Col md={6} sm={24}>
                         <FormItem label="设备名称">
-                            <Input onChange={ (e)=>{this.setState({dev_name:e.target.value})} } placeholder="请输入传感器名称" />
+                            <Input onChange={ (e)=>{this.setState({dev_name:e.target.value})} } placeholder="设备名称" />
                         </FormItem>
                     </Col>
                     <Col md={2} sm={24}>
@@ -206,7 +208,7 @@ class DataUnusual extends Component{
                 </Row>    
                 </Form>
                 <div style={{"marginBottom":10}}>总共<span style={{"color":'red'}}>{totalCount}</span>条：</div>
-                <Table columns={columns} dataSource={data} scroll={{ x: 1800, y:300}} />
+                <Table columns={columns} dataSource={data} scroll={{ x: 1750, y:300}} />
                 <Modal
                 title="添加事件"
                 visible={this.state.addModalVisible}

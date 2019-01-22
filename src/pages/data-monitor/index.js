@@ -53,9 +53,9 @@ class DataMonitor extends Component{
         this.interval = setInterval(()=>{
             this.getEchart({"sensor_list":this.state.sensorList,"time_scope":this.state.time_scope});
         },3000)
-        _this.props.queryAllSensorList({},(data)=>{
+        /*_this.props.queryAllSensorList({},(data)=>{
             _this.getEchart({"sensor_list":data[0]});
-        });
+        });*/
         _this.myChart.on('brushSelected', renderBrushed);
 
         function renderBrushed(params){
@@ -104,8 +104,10 @@ class DataMonitor extends Component{
         });
         _this.myChart.on('mouseout', function (params) {
             // 鼠标移开
+            let sensorList = _this.state.sensorList;
+            let time_scope = _this.state.time_scope
             _this.interval = setInterval(()=>{
-            _this.getEchart({"sensor_list":_this.state.sensorList,"time_scope":'1min'});
+            _this.getEchart({"sensor_list":sensorList,"time_scope":time_scope});
         },3000)
         });
         _this.myChart.on('legendselectchanged', function(obj) {
@@ -135,7 +137,7 @@ class DataMonitor extends Component{
             "time_scope":this.state.time_scope,
         },(res)=>{
             this.myChart.hideLoading();
-            if(res.length==0){return}
+            if(res==null || res=={} || res.length==0){return}
             let series=getSeries(res)
             this.myChart.setOption(series,true);
         })
@@ -148,7 +150,7 @@ class DataMonitor extends Component{
             "time_scope":param.time_scope || this.state.time_scope,
         },(res)=>{
             //this.myChart.hideLoading();
-            if(res==null || res=={}){return}
+            if(res==null || res=={} || res.length==0){return}
             let series=getSeries(res);
             this.myChart.setOption(series,true);
         })
@@ -161,7 +163,7 @@ class DataMonitor extends Component{
             "time_scope":value,
         },(res)=>{
             this.myChart.hideLoading();
-            if(res.length==0){return}
+            if(res==null || res=={} || res.length==0){return}
             let series=getSeries(res)  
             this.myChart.setOption(series,true);
         })    
@@ -173,12 +175,14 @@ class DataMonitor extends Component{
             message.error('查询项不能为空(传感器or时间！)')
             return;
         }
+        this.myChart.showLoading()
+        clearInterval(this.interval)
         this.props.queryMonitorDataSensorFilter({
             "sensor_list":this.state.sensorList,
             "start_time":start_time,
             "end_time":end_time
         },(res)=>{
-            clearInterval(this.interval)
+            this.myChart.hideLoading()
             if(res==null || res=={} || res.length==0){return}
             let series=getSeries(res)
             this.myChart.setOption(series,true); 

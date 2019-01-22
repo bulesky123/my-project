@@ -228,6 +228,9 @@ function getSeries(param,markPoint){
             }) ,
             name: params[0]&&(params[0][0][0]+"#"+params[0][0][1]),
             type: 'scatter',
+            tooltip:{
+                show:false
+            }
         }
     ];
     let lendArr = [params[0][0][0]+"#"+params[0][0][1]]
@@ -301,7 +304,7 @@ function getCoord(arr){
                                 offset: 0, color: 'red' // 0% 处的颜色
                             },  
                             {
-                                offset: 1, color: arr[j].level // 100% 处的颜色
+                                offset: 1, color: arr[j].level || 'yellow' // 100% 处的颜色
                             }],
                         globalCoord: false // 缺省为 false
                     }

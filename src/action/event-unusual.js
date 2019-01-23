@@ -18,10 +18,10 @@ function fetchEventUnusual(opts = {}) {
 
 function fetchQueryAbnormalSensorIdInfoo(opts = {},callback) {
     return dispatch => {
-        const api = config.BASEURL+'queryAbnormalSensorIdInfoo';
+        const api = config.BASEURL+'queryAbnormalSensorIdInfo';
         post({url:api,data:opts}).then((res)=>{
          if(res&&res.status === '200'){
-            callback&&callback(res)
+            callback&&callback(res.sensorInfo)
         }
     })
     }

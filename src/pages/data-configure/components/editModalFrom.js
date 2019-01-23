@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {post} from '../../../axios/tools'
 import config from '../../../axios/config'
-import fetchEventUnusual  from '../../../action/event-unusual';
+import {fetchEventUnusual}  from '../../../action/event-unusual';
 import {
   Form, Input, message, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete,
 } from 'antd';
@@ -54,7 +54,7 @@ class RegistrationForm extends React.Component {
   }
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { isEditModal ,formValue} = this.props;
+    const { isEditModal ,formValue,SensorTypeList} = this.props;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -97,12 +97,11 @@ class RegistrationForm extends React.Component {
         {getFieldDecorator('sensor_type', {initialValue:formValue.sensor_type})
         (
             <Select disabled={isEditModal?false:true}>
-            <Option value="温度">温度</Option>
-            <Option value="压强">压强</Option>
-            <Option value="电压">电压</Option>
-            <Option value="电流">电流</Option>
-            <Option value="流量">流量</Option>
-            <Option value="压力">压力</Option>
+            {
+              SensorTypeList&&SensorTypeList.map((item,i)=>{
+                return <Option key={i} value={item}>{item}</Option>
+              })
+            }
           </Select> 
           )}
         </Form.Item>

@@ -16,6 +16,30 @@ function fetchEventUnusual(opts = {}) {
     }
 }
 
+function fetchQueryAbnormalSensorIdInfoo(opts = {},callback) {
+    return dispatch => {
+        const api = config.BASEURL+'queryAbnormalSensorIdInfoo';
+        post({url:api,data:opts}).then((res)=>{
+         if(res&&res.status === '200'){
+            callback&&callback(res)
+        }
+    })
+    }
+}
+
+function fetchQuerySensorTypeList(opts = {},callback) {
+    return dispatch => {
+        const api = config.BASEURL+'querySensorTypeList';
+        post({url:api,data:opts}).then((res)=>{
+         if(res&&res.status === '200'){
+            dispatch(
+                pushSensorType(res)
+                )
+            callback&&callback(res)
+        }
+    })
+    }
+}
 
 function pushUnusual(eventList) {
     return {
@@ -23,4 +47,15 @@ function pushUnusual(eventList) {
         eventList
     }
 }
-export default fetchEventUnusual
+
+function pushSensorType(SensorType) {
+    return {
+        type: types.SENSORTYPE,
+        SensorType
+    }
+}
+export {
+    fetchEventUnusual,
+    fetchQueryAbnormalSensorIdInfoo,
+    fetchQuerySensorTypeList,
+} 

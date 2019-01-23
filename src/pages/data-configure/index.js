@@ -8,7 +8,7 @@ import config from '../../axios/config'
 import BreadcrumbCustom from '../BreadcrumbCustom';
 import WrappedAddModalForm from './components/addModalFrom';
 import EditModalFrom from './components/editModalFrom';
-import fetchEventUnusual  from '../../action/event-unusual';
+import { fetchEventUnusual, fetchQuerySensorTypeList }  from '../../action/event-unusual';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -25,6 +25,9 @@ class DataConfigure extends Component{
             sensor_name:'',
             formValue:{}
         }
+    }
+    componentWillMount(){
+        this.props.fetchQuerySensorTypeList({})
     }
     componentDidMount(){
         const searchParam = {
@@ -94,7 +97,7 @@ class DataConfigure extends Component{
         this.setState({editModalVisible:false})
     }
     render(){
-        const {eventList,totalCount=0} = this.props.FetchList;
+        const {eventList,SensorTypeList,totalCount=0} = this.props.FetchList;
         const { isEditModal ,formValue} =this.state
         const columns = [
             {title: '数据id', dataIndex: 'id', key: 'id',fixed: 'left', width: 100 },
@@ -168,13 +171,12 @@ class DataConfigure extends Component{
                 <Row > 
                     <Col md={6} sm={24} >
                         <FormItem label="传感器类型">
-                            <Select defaultValue='温度' onChange={ (e)=>{this.setState({sensor_type:e})} } placeholder="请选择传感器类型" style={{ minWidth: 100,width: '100%' }}>
-                                <Option value="温度">温度</Option>
-                                <Option value="压强">压强</Option>
-                                <Option value="电压">电压</Option>
-                                <Option value="电流">电流</Option>
-                                <Option value="流量">流量</Option>
-                                <Option value="压力">压力</Option>
+                            <Select  onChange={ (e)=>{this.setState({sensor_type:e})} } placeholder="请选择传感器类型" style={{ minWidth: 100,width: '100%' }}>
+                                {
+                                    SensorTypeList&&SensorTypeList.map((item,i)=>{
+                                        return <Option key={i} value={item}>{item}</Option>
+                                    })
+                                }
                             </Select>
                         </FormItem>
                     </Col>
@@ -213,7 +215,7 @@ class DataConfigure extends Component{
                 cancelText="取消"
                 footer={null}
                 >
-                    <WrappedAddModalForm hideModal={this.hideAddModal.bind(this)} />
+                    <WrappedAddModalForm SensorTypeList={SensorTypeList} hideModal={this.hideAddModal.bind(this)} />
                 </Modal>
                 <Modal
                 title={isEditModal?"修改传感器":'传感器详情'}
@@ -224,7 +226,7 @@ class DataConfigure extends Component{
                 cancelText="取消"
                 footer={null}
                 >
-                    <EditModalFrom formValue={formValue} isEditModal={isEditModal} hideModal={this.hideEditModal.bind(this)} />
+                    <EditModalFrom SensorTypeList={SensorTypeList} formValue={formValue} isEditModal={isEditModal} hideModal={this.hideEditModal.bind(this)} />
                 </Modal>
             </div>
         )
@@ -238,7 +240,8 @@ const mapStateToProps = (state) => {
 };
 //要什么方法，放到props里面,自动dispath
 const mapDispatchToProps = (dispatch) => ({
-    fetchEventUnusual: bindActionCreators(fetchEventUnusual, dispatch)
+    fetchEventUnusual: bindActionCreators(fetchEventUnusual, dispatch),
+    fetchQuerySensorTypeList:bindActionCreators(fetchQuerySensorTypeList, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(DataConfigure));

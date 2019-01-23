@@ -5,6 +5,11 @@ import {post} from '../../../axios/tools'
 import config from '../../../axios/config'
 import fetchImitateUnusual  from '../../../action/imitate-unusual';
 import {
+    queryAllSensorList , 
+}
+  from '../../../action/data-monitor';
+import {fetchQueryAbnormalSensorIdInfoo}  from '../../../action/event-unusual';
+import {
   Form, Input, message,Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button,DatePicker,
 } from 'antd';
 
@@ -15,11 +20,13 @@ class AddModalForm extends React.Component {
   constructor(){
         super();
         this.state={
-            visible:false
+            visible:false,
+            sensor_name:'',
+            sensor_id:'',
         }
     }
     componentWillMount(){
-        
+        this.props.queryAllSensorList({})
     }
     componentDidMount(){
         //this.props.form.resetFields() 
@@ -49,7 +56,15 @@ class AddModalForm extends React.Component {
     console.log('Selected Time: ', value);
     console.log('Formatted Selected Time: ', dateString);
   }
-
+  selectChange(value){
+        const sensor_id = value.split('#')[0];
+        this.props.fetchQueryAbnormalSensorIdInfoo({sensor_id:sensor_id},(data)=>{
+          this.setState({
+            sensor_name:data.sensor_name,
+            sensor_type:data.sensor_type
+          })
+        })    
+  }
   onOk(value) {
     console.log('onOk: ', value);
   }
@@ -59,7 +74,8 @@ class AddModalForm extends React.Component {
   }
   render() {
     const { getFieldDecorator } = this.props.form;
-
+    const { sensorList } = this.props.FetchSensorList
+    const { sensor_name, sensor_type } = this.state
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -88,11 +104,16 @@ class AddModalForm extends React.Component {
           {...formItemLayout}
           label="传感器id"
         >
-        {getFieldDecorator('sensor_id', {initialValue:'s001_002_08'})
+        {getFieldDecorator('sensor_id', {})
         (
-            <Select>
-            <Option value="s001_002_08">s001_002_08</Option>
-            <Option value="s001_002_09">s001_002_09</Option>
+            <Select
+              onChange={this.selectChange.bind(this)}
+            >
+            {
+              sensorList&&sensorList.map((item,i)=>{
+              return <Option key={i+1} value={item}>{item}</Option>
+            })
+          }
           </Select> 
           )}
         </Form.Item>
@@ -102,6 +123,7 @@ class AddModalForm extends React.Component {
         >
           {getFieldDecorator('sensor_type', {
             rules: [{ required: true, message: '传感器名称!', whitespace: true }],
+            initialValue:sensor_type
           })(
             <Input/>
           )}
@@ -112,6 +134,7 @@ class AddModalForm extends React.Component {
         >
           {getFieldDecorator('sensor_name', {
             rules: [{ required: true, message: '传感器类型!', whitespace: true }],
+            initialValue:sensor_name
           })(
             <Input/>
           )}
@@ -224,6 +247,8 @@ const mapStateToProps = (state) => {
 };
 //要什么方法，放到props里面,自动dispath
 const mapDispatchToProps = (dispatch) => ({
-    fetchImitateUnusual: bindActionCreators(fetchImitateUnusual, dispatch)
+    fetchImitateUnusual: bindActionCreators(fetchImitateUnusual, dispatch),
+    queryAllSensorList:bindActionCreators(queryAllSensorList, dispatch),
+    fetchQueryAbnormalSensorIdInfoo:bindActionCreators(fetchQueryAbnormalSensorIdInfoo, dispatch),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(WrappedAddModalForm);

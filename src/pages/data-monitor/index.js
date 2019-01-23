@@ -53,9 +53,9 @@ class DataMonitor extends Component{
         this.interval = setInterval(()=>{
             this.getEchart({"sensor_list":this.state.sensorList,"time_scope":this.state.time_scope});
         },3000)
-        /*_this.props.queryAllSensorList({},(data)=>{
+        _this.props.queryAllSensorList({},(data)=>{
             _this.getEchart({"sensor_list":data[0]});
-        });*/
+        });
         _this.myChart.on('brushSelected', renderBrushed);
 
         function renderBrushed(params){

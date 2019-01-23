@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import fetchEventUnusual  from '../../../action/event-unusual';
+import {fetchEventUnusual}  from '../../../action/event-unusual';
 import {
   Form, Input, Select, Row, Col,  Button,
 } from 'antd';

@@ -100,8 +100,8 @@ class EventUnusal extends Component{
             {title: '设备名称', dataIndex: 'dev_name', key: 'dev_name', width: 100},
             {title: '功能名称', dataIndex: 'function_name', key: 'function_name', width: 100},
             {title: '趋势', dataIndex: 'trend_flg', key: 'trend_flg', width: 100},
-            {title: '均值', dataIndex: 'mean_value', key: 'mean_value', width: 100},
-            {title: '方差', dataIndex: 'mse_value', key: 'mse_value', width: 70},
+            {title: '均值', dataIndex: 'mean_val', key: 'mean_val', width: 100},
+            {title: '方差', dataIndex: 'mse_val', key: 'mse_val', width: 70},
             {title: '开始时间', dataIndex: 'start_time', key: 'start_time', width:160},
             {title: '持续时间', dataIndex: 'continue_time', key: 'continue_time' ,width: 160},
             {title: '结束时间', dataIndex: 'end_time', key: 'end_time', width: 160},
@@ -110,7 +110,7 @@ class EventUnusal extends Component{
             {title: '是否系统监控', dataIndex: 'to_sys_monitor', key: 'to_sys_monitor', width: 160},
             {title: '操作', dataIndex: 'operation', key: 'operation', fixed: 'right',align:'center'},
         ];
-        
+        console.log(222)
         let data = UnusalData&&UnusalData.map((item,index)=>{
             return {
                 key: index,
@@ -121,8 +121,8 @@ class EventUnusal extends Component{
                 dev_name: item.dev_name,
                 function_name: item.function_name,
                 trend_flg: item.trend_flg,
-                mean_value: item.mean_value,
-                mse_value: item.mse_value,
+                mean_val: item.mean_val,
+                mse_val: item.mse_val,
                 start_time:item.start_time,
                 end_time: item.end_time,
                 create_time:item.create_time,

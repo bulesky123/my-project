@@ -163,9 +163,9 @@ class RegistrationForm extends React.Component {
           {...formItemLayout}
           label='均值&nbsp;'
         >
-          {getFieldDecorator('mean_value', {
+          {getFieldDecorator('mean_val', {
             rules: [{ required: true, message: '请输入均值!', whitespace: true }],
-            initialValue:formValue.mean_value+''
+            initialValue:formValue.mean_val+''
           })(
             <Input readOnly={isEditModal?"":"readOnly"}/>
           )}
@@ -174,9 +174,9 @@ class RegistrationForm extends React.Component {
           {...formItemLayout}
           label='方差&nbsp;'
         >
-          {getFieldDecorator('mse_value', {
+          {getFieldDecorator('mse_val', {
             rules: [{ required: true, message: '请输入方差!', whitespace: true }],
-            initialValue:formValue.mse_value+""
+            initialValue:formValue.mse_val+""
           })(
             <Input readOnly={isEditModal?"":"readOnly"}/>
           )}

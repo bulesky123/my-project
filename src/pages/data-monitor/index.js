@@ -112,7 +112,21 @@ class DataMonitor extends Component{
         });
         _this.myChart.on('legendselectchanged', function(obj) {
             //图例点击事件
-            //alert(11)
+           /* let sensorList = _this.state.sensorList;
+            let selected = obj.selected
+            Object.keys(selected).forEach(function(key){
+                if(selected[key]===false){
+                    let index = sensorList.indexOf(key); 
+                    if (index > -1) { 
+                        sensorList.splice(index, 1); 
+                    } 
+                }else{
+                    sensorList.push(key)
+                }
+               //console.log(key,selected[key]);
+           });
+            console.log(sensorList)*/
+
         })
     }
     componentWillUnmount(){

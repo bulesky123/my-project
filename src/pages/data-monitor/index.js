@@ -280,7 +280,7 @@ class DataMonitor extends Component{
                     </Col>
                 </Row>   
                 </Form>
-                <div id="myChart" style={{ marginTop:20,width: 1000, height: 450}}></div>
+                <div id="myChart" style={{ marginTop:20,width: '90%', height: 450,marginRight:80}}></div>
                 <div style={{ position: 'absolute',top: '244px', right: '50px'}}>
                     <div><span style={{ display: 'inline-block',width: '20px',height: '10px',background: 'red',marginRight: '10px'}}></span>红色预警</div>
                     <div><span style={{ display: 'inline-block',width: '20px',height: '10px',background: 'orange',marginRight: '10px'}}></span>橙色预警</div>

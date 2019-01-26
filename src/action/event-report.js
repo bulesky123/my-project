@@ -1,6 +1,7 @@
 import types from '../constants/actionType'
 import config from '../axios/config';
 import {post} from '../axios/tools';
+import { message } from 'antd';
 
 function fetchEnentReport(opts = {}) {
     return dispatch => {
@@ -10,6 +11,8 @@ function fetchEnentReport(opts = {}) {
             dispatch(
                 pushReport(res)
                 )
+        }else{
+            message.warn(res&&res.message)
         }
     })
     }

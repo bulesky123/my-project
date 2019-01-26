@@ -1,6 +1,7 @@
 import types from '../constants/actionType'
 import config from '../axios/config';
 import {post} from '../axios/tools';
+import { message } from 'antd';
 
 function queryAllSensorList(opts = {},callback) {
     return dispatch => {
@@ -11,6 +12,8 @@ function queryAllSensorList(opts = {},callback) {
                 pushAllSensorList(res)
                 )
             callback && callback(res.sensorList)
+        }else{
+            message.warn(res&&res.message)
         }
     })
     }
@@ -24,6 +27,8 @@ function queryKeySensorList(opts={}){
             dispatch(
                 pushAllSensorList(res)
                 )
+        }else{
+            message.warn(res&&res.message)
         }
     })
     } 
@@ -38,6 +43,8 @@ function queryMonitorDataSensorListInitial(opts={},callback){
                 pushQueryMonitorData(res)
                 )
             callback && callback(res.sensorList)
+        }else{
+            message.warn(res&&res.message)
         }
     })
     } 
@@ -53,6 +60,8 @@ function queryMonitorDataSensorFilter(opts={},callback){
                 pushQueryMonitorDataFilter(res)
                 )
             callback && callback(res.sensorList)
+        }else{
+            message.warn(res&&res.message)
         }
     })
 } 

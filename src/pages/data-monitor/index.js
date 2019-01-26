@@ -54,7 +54,7 @@ class DataMonitor extends Component{
             this.getEchart({"sensor_list":this.state.sensorList,"time_scope":this.state.time_scope});
         },3000)
         _this.props.queryAllSensorList({},(data)=>{
-            _this.getEchart({"sensor_list":data[0]});
+            _this.getEchart({"sensor_list":[data[0]]});
         });
         _this.myChart.on('brushSelected', renderBrushed);
 
@@ -129,20 +129,6 @@ class DataMonitor extends Component{
     hideAddModal(){
         this.setState({addModalVisible:false,selectData:null})
     }
-    handleChange(value) {
-        this.setState({sensorList:value})
-        this.myChart.showLoading();
-        this.props.queryMonitorDataSensorListInitial({
-            "sensor_list":value,
-            "time_scope":this.state.time_scope,
-        },(res)=>{
-            this.myChart.hideLoading();
-            if(res==null || res=={} || res.length==0){return}
-            let series=getSeries(res)
-            this.myChart.setOption(series,true);
-        })
-        
-    }
     getEchart(param){
         //this.myChart.showLoading();
         this.props.queryMonitorDataSensorListInitial({
@@ -157,6 +143,9 @@ class DataMonitor extends Component{
     }
     selectChange(value){
         this.setState({time_scope:value})
+        if(this.interval){
+            clearInterval(this.interval)
+        }
         this.myChart.showLoading();
         this.props.queryMonitorDataSensorListInitial({
             "sensor_list":this.state.sensorList,
@@ -166,7 +155,35 @@ class DataMonitor extends Component{
             if(res==null || res=={} || res.length==0){return}
             let series=getSeries(res)  
             this.myChart.setOption(series,true);
-        })    
+            let sensorList = this.state.sensorList;
+            let time_scope = this.state.time_scope
+            this.interval = setInterval(()=>{
+                this.getEchart({"sensor_list":sensorList,"time_scope":time_scope});
+            },3000)
+        })      
+    }
+    handleChange(value) {
+        console.log(value)
+        this.setState({sensorList:value})
+        if(this.interval){
+            clearInterval(this.interval)
+        }
+        this.myChart.showLoading();
+        this.props.queryMonitorDataSensorListInitial({
+            "sensor_list":value,
+            "time_scope":this.state.time_scope,
+        },(res)=>{
+            this.myChart.hideLoading();
+            if(res==null || res=={} || res.length==0){return}
+            let series=getSeries(res)
+            this.myChart.setOption(series,true);
+            let sensorList = this.state.sensorList;
+            let time_scope = this.state.time_scope
+            this.interval = setInterval(()=>{
+                this.getEchart({"sensor_list":sensorList,"time_scope":time_scope});
+            },3000)
+        })
+        
     }
     search(){
         const sensorList = this.state.sensorList

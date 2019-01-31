@@ -76,7 +76,6 @@ class DataMonitor extends Component{
                     }   
                 }
             }
-            
             if(!_this.state.addModalVisible&&start_time&&end_time&&sensor_id.length>0){
                 _this.myChart.dispatchAction({
                     type: 'brush',//选择action行为
@@ -104,11 +103,15 @@ class DataMonitor extends Component{
         });
         _this.myChart.on('mouseout', function (params) {
             // 鼠标移开
-            let sensorList = _this.state.sensorList;
-            let time_scope = _this.state.time_scope
-            _this.interval = setInterval(()=>{
-            _this.getEchart({"sensor_list":sensorList,"time_scope":time_scope});
-        },3000)
+            let search = sessionStorage.getItem('search');
+            if(!search){
+                let sensorList = _this.state.sensorList;
+                let time_scope = _this.state.time_scope
+                _this.interval = setInterval(()=>{
+                    _this.getEchart({"sensor_list":sensorList,"time_scope":time_scope});
+                },3000)
+            }
+            
         });
         _this.myChart.on('legendselectchanged', function(obj) {
             //图例点击事件
@@ -133,6 +136,10 @@ class DataMonitor extends Component{
         clearInterval(this.interval)
     }
     handleRangePickerChange(moment, date) {
+        if(moment[1].valueOf()-moment[0].valueOf()>7*24*60*60*1000){
+            message.warn('时间不允许超过7天！');
+            return;
+        }
         this.inputData.start_time = date[0];
         this.inputData.end_time = date[1];
     }
@@ -177,7 +184,6 @@ class DataMonitor extends Component{
         })      
     }
     handleChange(value) {
-        console.log(value)
         this.setState({sensorList:value})
         if(this.interval){
             clearInterval(this.interval)
@@ -215,6 +221,7 @@ class DataMonitor extends Component{
         },(res)=>{
             this.myChart.hideLoading()
             if(res==null || res=={} || res.length==0){return}
+            sessionStorage.setItem('search','search')
             let series=getSeries(res)
             this.myChart.setOption(series,true); 
         })

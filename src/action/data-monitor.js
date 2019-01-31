@@ -57,7 +57,7 @@ function queryMonitorDataSensorFilter(opts={},callback){
         post({url:api,data:opts}).then((res)=>{
          if(res&&res.status === '200'){
             dispatch(
-                pushQueryMonitorDataFilter(res)
+                pushQueryMonitorData(res)
                 )
             callback && callback(res.sensorList)
         }else{

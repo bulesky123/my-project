@@ -31,6 +31,10 @@ class AddModalForm extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {  
         console.log('Received values of form: ', values);
+        if(values.end_time_obj.valueOf()-values.start_time_obj.valueOf()>5*60*1000){
+            message.warn('时间不允许超过5分钟！');
+            return;
+        }
         let submitObj = Object.assign({"start_time":values['start_time_obj'].format('YYYY-MM-DD HH:mm:ss'),"end_time":values['end_time_obj'].format('YYYY-MM-DD HH:mm:ss')}, values);
         post({url:config.BASEURL+'addAbnormalManuCase',data:submitObj}).then((data)=>{
           if(data.status !== '200'){

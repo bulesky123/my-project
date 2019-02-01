@@ -33,7 +33,7 @@ class DataMonitor extends Component{
         this.state={
             addModalVisible:false,
             selectData:null,
-            sensorList:['s001_002_08#deddadada'],
+            sensorList:[],
             time_scope:'1min'
         };
         this.myChart=null;
@@ -54,6 +54,9 @@ class DataMonitor extends Component{
             this.getEchart({"sensor_list":this.state.sensorList,"time_scope":this.state.time_scope});
         },3000)
         _this.props.queryAllSensorList({},(data)=>{
+            _this.setState({
+                sensorList:[data[0]] //给state一个默认值
+            })
             _this.getEchart({"sensor_list":[data[0]]});
         });
         _this.myChart.on('brushSelected', renderBrushed);
@@ -90,7 +93,7 @@ class DataMonitor extends Component{
                 })
                 setTimeout(()=>{
                     _this.setState({addModalVisible:true})
-                },100)
+                },0)
             }
         }
         _this.myChart.on('click', function (params) {
@@ -241,13 +244,13 @@ class DataMonitor extends Component{
                             mode="multiple"
                             size='default'
                             placeholder="选择传感器"
-                            defaultValue={[]}
+                            defaultValue={sensorList[0]?[sensorList[0]]:[]}
                             onChange={this.handleChange.bind(this)}
                             style={{ minWidth: '150px' }}
                             >
                             {
-                                sensorList.map((item,index)=>{
-                                    return(<Option key={item} value={item}>{item}</Option>)
+                                sensorList&&sensorList.map((item,index)=>{
+                                    return(<Option key={ index+item } value={ item }>{ item }</Option>)
                                 })
                             }
                             </Select>
@@ -262,13 +265,13 @@ class DataMonitor extends Component{
                             defaultValue='1min'
                             
                             >
-                                <Option value="1min">近1分钟</Option>
-                                <Option value="5min">近5分钟</Option>
-                                <Option value="10min">近10分钟</Option>
-                                <Option value="1h">近1小时</Option>
-                                <Option value="24h">近24小时</Option>
-                                <Option value="1week">近1个周</Option>
-                                <Option value="1month">近1个月</Option>
+                                <Option key='11' value="1min">近1分钟</Option>
+                                <Option key='22' value="5min">近5分钟</Option>
+                                <Option key='33' value="10min">近10分钟</Option>
+                                <Option key='44' value="1h">近1小时</Option>
+                                <Option key='55' value="24h">近24小时</Option>
+                                <Option key='66' value="1week">近1个周</Option>
+                                <Option key='77' value="1month">近1个月</Option>
                             </Select>
                         </FormItem>
                     </Col>

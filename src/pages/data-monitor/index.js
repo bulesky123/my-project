@@ -20,7 +20,6 @@ import {
 //http://echarts.baidu.com/examples/editor.html?c=line-marker
 //http://echarts.baidu.com/examples/editor.html?c=line-aqi
 //http://echarts.baidu.com/option.html#brush
-import {chartData,chartArrData} from '../../api/chartArr';
 const {Option} = Select;
 const FormItem = Form.Item;
 const {RangePicker} = DatePicker;

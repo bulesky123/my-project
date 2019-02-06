@@ -5,7 +5,6 @@ import {post,get} from '../../../axios/tools';
 import echarts from 'echarts';
 import BreadcrumbCustom from '../../BreadcrumbCustom';
 
-import chartArr from '../../../api/chartArr';
 //api参考：http://echarts.baidu.com/option.html#series-graph.data.category
 
 class UnusualChart extends Component{
@@ -74,8 +73,7 @@ class UnusualChart extends Component{
         })
     }
     componentDidMount(){
-        this.createEchart(chartArr);
-        //this.getChartData();
+        this.getChartData();
     }
     render(){
         return(

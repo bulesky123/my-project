@@ -7,7 +7,6 @@ import { getOption } from './getOption';
 import config from '../../../axios/config'
 import echarts from 'echarts';
 
-import chartArr from '../../../api/chartArr';
 const RadioGroup = Radio.Group;
 
 class ModleChart extends Component{
@@ -24,11 +23,11 @@ class ModleChart extends Component{
 	}   
     getChartData(relation_type){
         post({url:config.BASEURL +'queryAbnormalGraph',data:{relation_type:relation_type}}).then((data)=>{
-            this.createEchart(data.resultList);
+            if(!data){return}
+            this.createEchart(data&&data.resultList);
         })
     }
     componentDidMount(){
-        //this.createEchart(chartArr);
         this.getChartData('');
     }
     onCancel(){

@@ -44,7 +44,8 @@ function getLine(line){
 }
 
 
-function getOption(obj){       
+function getOption(obj){
+    if(!obj){return []}       
     let point = obj.point || [],
         line = obj.line || [],
         categories = [],

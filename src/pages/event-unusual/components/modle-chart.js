@@ -6,7 +6,7 @@ import config from '../../../axios/config'
 import {post} from '../../../axios/tools';
 import echarts from 'echarts';
 
-import chartArr from '../../../api/chartArr';
+
 const RadioGroup = Radio.Group;
 
 class ModleChart extends Component{
@@ -88,7 +88,6 @@ class ModleChart extends Component{
         })
     }
     componentDidMount(){
-        //this.createEchart(chartArr);
         this.getChartData();
     }
     handleSubmit = (e) => {

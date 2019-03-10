@@ -87,8 +87,11 @@ class ModleChart extends Component{
             
         })
     }
+    componentWillReceiveProps(props){
+      props.visible ? this.getChartData() : null;
+    }
     componentDidMount(){
-        this.getChartData();
+      this.getChartData();
     }
     handleSubmit = (e) => {
     const formValue = this.props.formValue
@@ -119,6 +122,7 @@ class ModleChart extends Component{
   	}
     render(){
     	const { getFieldDecorator } = this.props.form;
+      const addModalVisible = this.props.visible
       let value = this.state.value
     	const formItemLayout = {
     		labelCol: {
@@ -131,34 +135,38 @@ class ModleChart extends Component{
     		},
     	};
         return(
-            <div>
-            	<div id="myChart" style={{ width: 600, height: 500}}></div>
-             	<Form onSubmit={this.handleSubmit}>
-             	<Form.Item
-             		{...formItemLayout}
-             		label='是否系统监控&nbsp;'
-             		>
-             		{getFieldDecorator('to_sys_monitor', {
-             			rules: [{ required: true, message: '请选择是否系统监控!'}],
+            <div>{
+              addModalVisible ? (<div>
+              <div id="myChart" style={{ width: 600, height: 500}}></div>
+              <Form onSubmit={this.handleSubmit}>
+              <Form.Item
+                {...formItemLayout}
+                label='是否系统监控&nbsp;'
+                >
+                {getFieldDecorator('to_sys_monitor', {
+                  rules: [{ required: true, message: '请选择是否系统监控!'}],
                   initialValue:value 
-             		})(
-             		<RadioGroup onChange={this.onChange}>
-             			<Radio value='yes'>是</Radio>
-             			<Radio value='no'>否</Radio>
-             		</RadioGroup>
-             	)}
-             	</Form.Item>
-             		<Form.Item>
-             			<Row>
-             				<Col  push='5' span='12'>
-             					<Button  type="primary" htmlType="submit">保存</Button>
-             				</Col>
-             				<Col push='5' span='12'>
-             					<Button onClick={()=>this.onCancel()}>取消</Button>
-             				</Col>
-             			</Row>
-             		</Form.Item>
-             	</Form>
+                })(
+                <RadioGroup onChange={this.onChange}>
+                  <Radio value='yes'>是</Radio>
+                  <Radio value='no'>否</Radio>
+                </RadioGroup>
+              )}
+              </Form.Item>
+                <Form.Item>
+                  <Row>
+                    <Col  push='5' span='12'>
+                      <Button  type="primary" htmlType="submit">保存</Button>
+                    </Col>
+                    <Col push='5' span='12'>
+                      <Button onClick={()=>this.onCancel()}>取消</Button>
+                    </Col>
+                  </Row>
+                </Form.Item>
+              </Form>
+            </div>)
+            : null
+            }
             </div>
         )
     }

@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { Table ,Modal,Button,Input, Select, Row, Col,DatePicker,Icon,Upload ,message,Form} from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
 import WrappedAddModalForm from './components/addModalFrom';
+import SearchFrom from './components/searchFrom';
 import {  getSeries } from './components/setOptions';
 import echarts from 'echarts';
 import {post} from '../../axios/tools'
@@ -31,9 +32,11 @@ class DataMonitor extends Component{
         super();
         this.state={
             addModalVisible:false,
+            searchVisible:false,
             selectData:null,
             sensorList:[],
-            time_scope:'1min'
+            time_scope:'1min',
+            dataZoom:[],
         };
         this.myChart=null;
         this.interval=null;
@@ -133,6 +136,36 @@ class DataMonitor extends Component{
             console.log(sensorList)*/
 
         })
+        _this.myChart.on('datazoom', function (params){
+            const sensorList = _this.state.sensorList
+            const dataSensorListInitial = _this.props.FetchSensorList.dataSensorListInitial || []
+            const selectArr = []
+            const startValue = params.batch[0].startValue
+            const endValue = params.batch[0].endValue
+            const xAxis = dataSensorListInitial[0].map((item)=>{return item[3]})
+            const sensorValue = []
+            for(let i=0;i<dataSensorListInitial.length;i++){
+                sensorValue.push({
+                    sensor: sensorList[i],
+                    sensorValue: dataSensorListInitial[i].map((item)=>{return item[2]})
+                })
+            }
+
+            for(let j=0;j<sensorValue.length;j++){
+                selectArr.push({
+                    xAxis:xAxis.slice(startValue,endValue),
+                    yAxis:sensorValue[j].sensorValue.slice(startValue,endValue),
+                    sensor:sensorValue[j].sensor
+                })
+            }
+            if(selectArr.length>0){
+            clearInterval(_this.interval)
+            _this.setState({
+                dataZoom:selectArr,
+                searchVisible:true
+            })
+            }
+        })
     }
     componentWillUnmount(){
         clearInterval(this.interval)
@@ -151,6 +184,16 @@ class DataMonitor extends Component{
     //关闭添加弹窗Modal
     hideAddModal(){
         this.setState({addModalVisible:false,selectData:null})
+    }
+    //关闭添加弹窗Modal
+    hideSearchModal(){
+        this.setState({searchVisible:false,dataZoom:null})
+        let sensorList = this.state.sensorList;
+        let time_scope = this.state.time_scope
+        clearInterval(this.interval)
+        this.interval = setInterval(()=>{
+            this.getEchart({"sensor_list":sensorList,"time_scope":time_scope});
+        },3000)
     }
     getEchart(param){
         //this.myChart.showLoading();
@@ -230,7 +273,7 @@ class DataMonitor extends Component{
 
     }
     render(){
-        const {selectData} = this.state
+        const {selectData,dataZoom} = this.state
         const { sensorList=[] ,dataSensorListInitial=[]} =this.props.FetchSensorList
         return(
             <div>
@@ -302,6 +345,14 @@ class DataMonitor extends Component{
                 footer={null}
                 >
                     <WrappedAddModalForm selectData={selectData} hideModal={this.hideAddModal.bind(this)} />
+                </Modal>
+                <Modal
+                title="查看异常事件"
+                visible={this.state.searchVisible}
+                onCancel={this.hideSearchModal.bind(this)}
+                footer={null}
+                >
+                    <SearchFrom visible={this.state.searchVisible} dataZoom={dataZoom} hideModal={this.hideSearchModal.bind(this)} />
                 </Modal>
             </div>
         )

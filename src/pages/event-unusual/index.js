@@ -171,7 +171,7 @@ class EventUnusal extends Component{
                 cancelText="取消"
                 footer={null}
                 >
-                    <WrappedAddModalForm formValue={this.state.formValue} hideModal={this.hideAddModal.bind(this)} />
+                    <WrappedAddModalForm visible={this.state.addModalVisible} formValue={this.state.formValue} hideModal={this.hideAddModal.bind(this)} />
                 </Modal>
 
             </div>

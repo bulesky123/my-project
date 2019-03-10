@@ -35,7 +35,8 @@ class SearchFrom extends React.Component {
           gridIndex: 0,
           splitLine: {
             show: false,
-          }
+          },
+          scale:true,
         },
         axisPointer: {
           link: {xAxisIndex: 'all'},
@@ -58,7 +59,7 @@ class SearchFrom extends React.Component {
         series: obj.series
       }
       console.log(option)
-      myChart.setOption(option);
+      myChart.setOption(option,true);
     } 
   getOption(arr){
     let xAxis=arr[0].xAxis;
